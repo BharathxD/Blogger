@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+   scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 80px;
+	background-color: #EB1D36;
+    color: #fff;
+}
+
+
+.blogger_logo {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.nav_item {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    background-color: #F5EDDC;
+    position: relative;
+}
+
+.post a {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.785);
+}
+
+.post a:hover {
+    color: #fff;
+}
+
+nav {
+    background-color: #21325E;
+}
+
+.post {
+    margin-bottom: 30px;
+}
+
+main {
+    padding: 50px 50px 80px 50px;
+}
+
+footer {
+    bottom: 0;
+    position: absolute;
+}
+
+.contact_container {
+    padding: 20px;
+    background-color: #fbf7ee;
+    border-radius: 10px;
+}
+
+.contact_container h1{
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.post_container {
+    padding: 25px;
+    background-color: #fbf7ee;
+    border-radius: 10px;
+}
+
+.post_container h1{
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.post_container p{
+    margin-left: 0;
+}
+
+.post_container h5{
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.form_input input {
+    padding: 0 1em !important;
+}
+
+.post p{
+    margin-left: 0;
+}
+
+.hero_container {
+    padding: 25px;
+    border-radius: 10px;
+    background-color: black;
+    border: 2px solid #000;
+    color: #fff;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.hero_container a {
+    margin-top: 10px;
+}
+
+.hero_container p {
+    margin-left: 0;
+}
+
+
+
+svg {
+    height: 30px;
+    width: 30px;
+    font-size: 2rem;
+    margin: auto 10px;
+}
+
+.aboutBtn {
+    margin-left: 10px;
+}
+
+.rows a {
+    margin: 10px;
+}
+
+.nested_c_container h1, p {
+    margin: auto 10px;
+}
+
+.transition-fade {
+    transition: 0.4s;
+    opacity: 1;
+  }
+  
+  html.is-animating .transition-fade {
+    opacity: 0;
+  }
+
+  .navitems a {
+    border-radius: 10px;
+}
+
+
+.navitems a:focus {
+    background-color: #eb1d35d8 !important;
+    transition: 0.3s;
+}
+
+.nested_report_container {
+    margin-bottom: 20px;
+}
+
+.nested_report_container p {
+    margin-left: 0;
+    font-size: 1.25rem;
+}
+
+
+@media screen and (max-width: 420px) {
+    main {
+        padding: 30px 30px 50px 30px;
+    }
+    .aboutBtn {
+        margin-top: 10px;
+        margin-left: 0;
+    }
+    svg {
+        height: 20px;
+        width: 20px;
+    }
+    .logo_paths {
+        text-align: center;
+    }
+    contact_container a {
+        outline: 1px solid green;
+    }
+    .rows a {
+        margin: 5px;
+    }
+    .navitems {
+        background-color: transparent;
+     }
+}
+
+@media screen and (max-width: 438px) {
+    .aboutBtn {
+        margin-top: 10px;
+        margin-left: 0;
+    }
+    .navitems {
+        background-color: transparent;
+     }
+}
+
+@media screen and (max-width: 768px) {
+    main {
+        padding: 30px 30px 80px 30px;
+        transition: 0.3s;
+    }
+    .blogger_logo {
+        font-size: 1.5rem;
+    }
+    svg {
+        height: 30px;
+        width: 30px;
+        margin-bottom: 20px;
+    }
+    .logo_paths {
+        text-align: center;
+    }
+    .rows a{
+        margin: 5px;
+    }
+    .navitems {
+       background-color: transparent;
+    }
+}
+

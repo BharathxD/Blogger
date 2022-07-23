@@ -1,0 +1,24 @@
+<%- include("partials/header"); -%>
+<div class="hero_container">
+  <h1>Interested in writing Blogs?</h1>
+  <p class="fs-5 col-md-8">Hey there, I'm Bharath, the creator of this new blogging platform called Blogger. 
+    This website allows you to write quick and minimalistic blogs <br>
+    For a quick start, click the below button to get started.</p>
+  <div class="mb">
+    <a href="/compose" class="btn btn-danger btn-lg px-4">Compose Now</a>
+    <a href="/about" class="btn btn-light btn-lg px-4 aboutBtn">About</a>
+  </div>
+</div>
+      <% posts.forEach(function(post){ %>
+        <div class="h-100 p-5 text-bg-dark rounded-3 post">
+          <h2> <%= post.title %> </h2>
+          <h5>by <%= post.author %> </h5>
+          <p><%= post.content.substring(0, 100) + "..." %></p>
+          <a href="posts/<%=post._id%>">
+            Read More
+          </a>
+          </div>
+        <% }); %>
+      </div>
+    </main>
+<%- include("partials/footer"); -%>
