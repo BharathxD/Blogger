@@ -33,12 +33,10 @@ var _require = require("lodash"),
 var _require2 = require("console"),
     log = _require2.log;
 
-require("dotenv").config();
-
 var posts = [];
 var app = express();
-var post = mongoose.createConnection("mongodb+srv://Bharath_xD:" + process.env.SEC + "@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
-var user = mongoose.createConnection("mongodb+srv://Bharath_xD:" + process.env.SEC + "@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
+var post = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
+var user = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
 app.set("view engine", "ejs");
 app.use(flash());
 app.use(bodyParser.urlencoded({
@@ -55,8 +53,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
+  clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
+  clientSecret: "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",
   callbackURL: "http://localhost:3000/auth/google/compose"
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
