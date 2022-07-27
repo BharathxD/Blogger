@@ -7,6 +7,9 @@
   },
   "author": "Bharath",
   "license": "ISC",
+  "engines": {
+    "node": "16.16.0"
+  },
   "dependencies": {
     "@swup/js-plugin": "^1.0.4",
     "body-parser": "^1.18.3",
@@ -26,5 +29,6 @@
     "passport-local-mongoose": "^7.1.2",
     "swup": "^2.0.16"
   },
+  "devDependencies": {},
   "description": ""
 }
