@@ -185,7 +185,7 @@ app.get("/posts/:name", function (req, res) {
         postAuthor: foundPost.author
       });
     } else {
-      console.log(err);
+      console.log("err at line 193");
     }
   });
 });

@@ -147,6 +147,7 @@ footer {
     padding: 20px;
     background-color: #fbf7ee;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .contact_container h1{
@@ -175,6 +176,7 @@ footer {
     padding: 20px;
     background-color: #fbf7ee;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .report_container h1{
@@ -205,6 +207,7 @@ footer {
     padding: 20px;
     background-color: #fbf7ee;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .about_container h1{
@@ -239,7 +242,7 @@ footer {
     padding: 25px;
     background-color: #fbf7ee;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .post_container h1{
@@ -599,6 +602,7 @@ svg {
     .nav_signinBtn {
         margin: 10px auto;
     }
+
     .contact_container {
         padding: 20px;
         background-color: #fbf7ee;
