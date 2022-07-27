@@ -18,8 +18,8 @@ const posts = [];
 
 const app = express();
 
-var post = mongoose.createConnection("mongodb://localhost:27017/blogDB");
-var user = mongoose.createConnection("mongodb://localhost:27017/userDB");
+var post = mongoose.createConnection("mongodb+srv://Bharath_xD:"+process.env.SEC+"@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
+var user = mongoose.createConnection("mongodb+srv://Bharath_xD:"+process.env.SEC+"@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
 
 app.set("view engine", "ejs");
 app.use(flash());
