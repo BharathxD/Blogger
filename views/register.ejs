@@ -1,0 +1,29 @@
+<%-include('partials/header') %>
+<div class="form-signin">
+  <div class="container">
+    <form action="/register" method="post">
+      <h1>Register</h1> 
+      <input
+          type="email"
+          class="form-control"
+          placeholder="Username"
+          name="username"
+          autocomplete="off"
+          required
+        />
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          name="password"
+          required
+        />
+      <button class="w-100 btn btn-lg btn-dark" type="submit">Sign in</button>
+      <a type="button" href="/auth/google" class="btn btn-light googleBtn" style="margin-top:10px;">
+        <span> Sign in with Google</span>
+        <ion-icon name="logo-google" class="nav_icon"></ion-icon>
+      </a>
+    </form>
+  </div>
+  </div>
+<%-include('partials/footer') %>

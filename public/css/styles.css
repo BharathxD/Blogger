@@ -61,6 +61,13 @@ select {
   }
 }
 
+*::selection {
+    text-shadow: 0 0 10px #f2f2f2, 0 0 20px rgb(206 201 201 / 12%);
+}
+
+footer::selection {
+    text-shadow: 0 0 6px #f2f2f2, 0 0 20px rgb(206 201 201 / 12%);
+}
 
 footer {
     display: flex;
@@ -97,7 +104,7 @@ body {
 
 .post a {
     background-color: transparent;
-    color: rgba(255, 255, 255, 0.785);
+    color: #eb1d35;
 }
 
 .post a:hover {
@@ -109,16 +116,29 @@ nav {
 }
 
 .post {
+    margin-top: 30px;
     margin-bottom: 30px;
 }
 
 main {
     padding: 50px 50px 80px 50px;
+    min-height: 100% !important;
 }
 
 footer {
     bottom: 0;
     position: absolute;
+}
+
+.contact_container p::selection {
+    background-color: #eb1d35;
+    color: #fff;
+}
+
+.contact_container h1::selection {
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
 }
 
 .contact_container {
@@ -132,10 +152,92 @@ footer {
     font-weight: 600;
 }
 
+.contact_container p{
+    font-size: 1.25rem;
+    margin: 15px 10px;
+    transition: 0.5s;
+}
+
+.report_container p::selection {
+    background-color: #eb1d35;
+    color: #fff;
+}
+
+.report_container h1::selection {
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
+}
+
+.report_container {
+    padding: 20px;
+    background-color: #fbf7ee;
+    border-radius: 10px;
+}
+
+.report_container h1{
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.report_container p{
+    font-size: 1.25rem;
+    margin: 15px 10px;
+    transition: 0.5s;
+}
+
+.about_container p::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    background-color: #eb1d35;
+    color: #fff;
+}
+
+.about_container h1::selection, li::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    background-color: #21325E;
+    text-shadow: none;
+    color: #fff;
+}
+
+.about_container {
+    padding: 20px;
+    background-color: #fbf7ee;
+    border-radius: 10px;
+}
+
+.about_container h1{
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.about_container p, ul, h6{
+    font-size: 1.25rem;
+    margin: 20px auto;
+    transition: 0.5s;
+}
+
+.post_container p::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    background-color: #EB1D36;
+    color: #fff;
+}
+
+.post_container h1::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
+}
+
+.contact_container button{
+    font-size: 1.5rem;
+}
+
 .post_container {
     padding: 25px;
     background-color: #fbf7ee;
     border-radius: 10px;
+    margin-bottom: 15px;
 }
 
 .post_container h1{
@@ -145,6 +247,7 @@ footer {
 
 .post_container p{
     margin-left: 0;
+    font-size: 1.25rem;
 }
 
 .post_container h5{
@@ -156,8 +259,43 @@ footer {
     padding: 0 1em !important;
 }
 
+.contact_container h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.label {
+    font-size: 2rem;
+}
+
+.post p::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    background-color: #EB1D36;
+    color: #fff;
+}
+
+.post h2::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
+}
+
 .post p{
     margin-left: 0;
+}
+
+.hero_container p::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    background-color: #EB1D36;
+    color: #fff;
+}
+
+.hero_container h1::selection {
+    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
 }
 
 .hero_container {
@@ -178,7 +316,10 @@ footer {
     margin-left: 0;
 }
 
-
+footer {
+    position: absolute;
+    left: 0;
+}
 
 svg {
     height: 30px;
@@ -208,14 +349,15 @@ svg {
     opacity: 0;
   }
 
-  .navitems a {
+.nav_bar a {
     border-radius: 10px;
 }
 
 
-.navitems a:focus {
+.nav_bar a:focus {
     background-color: #eb1d35d8 !important;
     transition: 0.3s;
+    color: #fff;
 }
 
 .nested_report_container {
@@ -227,6 +369,156 @@ svg {
     font-size: 1.25rem;
 }
 
+.nav_icon {
+    font-size: 1.1rem;
+    margin: 0;
+    margin: auto 2px;
+    color: #eb1d35;
+}
+
+.nav_icon:focus {
+    color: #fff;
+}
+
+.nav_googleBtn span {
+    font-size: 1rem !important;
+    font-weight: 600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.nav_googleBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav_userBtn span {
+    font-size: 1rem !important;
+    font-weight: 600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.nav_userBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px; 
+}
+
+.nav_signinBtn span {
+    font-size: 1rem !important;
+    font-weight: 600;
+}
+
+.nav_signinBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+
+.nav_bar {
+    padding: 10px !important;
+}
+
+.nav_mid {
+    margin-right: 0 !important;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.transition-fade {
+    min-height:65vh !important;
+}
+
+
+.form-signin {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    width: 450px;
+    margin: auto;
+    padding: 15px;
+    min-height:inherit;
+    text-align: center;
+  }
+
+  .form-signin .container {
+    height: max-content;    
+    padding: 30px;
+    border-radius: 20px;
+    background-color: #fbf7ee;
+    box-shadow: 0 0 20px 0 rgba(0,0,0,0.2), 0 5px 5px 0 rgba(0,0,0,0.24);
+  }
+  
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 60px;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    height: 60px;
+  }
+  
+  .form-signin h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-signin h5 {
+    font-size: 0.9rem;
+    margin: 15px;
+    background-color: #f5eddcbe;
+    padding: 5px;
+    border-radius: 10px;
+  }
+  
+  .googleBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .googleBtn:hover{
+    margin-top: 10px;
+    transition: 0.5s;
+  }
+
+  .nav_mid li {
+    font-size: 1.25rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+@media screen and (max-width: 992px) {
+    .nav_signinBtn {
+        margin: 10px auto;
+    }
+    .nav_item {
+        margin: 10px auto;
+    }
+    .nav_mid a{
+        padding-left: 10px;
+    }
+    .nav_userBtn {
+        min-width: 100%;
+    }
+}
 
 @media screen and (max-width: 420px) {
     main {
@@ -243,15 +535,22 @@ svg {
     .logo_paths {
         text-align: center;
     }
-    contact_container a {
-        outline: 1px solid green;
-    }
     .rows a {
         margin: 5px;
     }
     .navitems {
         background-color: transparent;
-     }
+    }
+    .nav_signinBtn {
+        margin: 10px auto;
+    }
+    .nav_userBtn {
+        min-width: 100%;
+        margin-right: 0;
+    }
+    .form-signin {
+        width: 340px;
+    }
 }
 
 @media screen and (max-width: 438px) {
@@ -261,7 +560,13 @@ svg {
     }
     .navitems {
         background-color: transparent;
-     }
+    }
+    .nav_signinBtn {
+        margin: 10px auto;
+    }
+    .nav_userBtn {
+        min-width: 100%;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -285,6 +590,60 @@ svg {
     }
     .navitems {
        background-color: transparent;
+    }
+    .nav_signinBtn {
+        margin: 10px auto;
+    }
+    .contact_container {
+        padding: 20px;
+        background-color: #fbf7ee;
+        border-radius: 10px;
+    }
+    
+    .contact_container h1{
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .contact_container p{
+        font-size: 1.5rem;
+        margin: 20px 10px;
+    }
+
+    .about_container h1{
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    
+    .about_container p, ul, h6{
+        font-size: 1rem;
+        margin: 20px auto;
+    }
+    
+    .post_container h1{
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    
+    .post_container p{
+        margin-left: 0;
+        font-size: 1rem;
+    }
+
+    .report_container h1{
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    
+    .report_container p{
+        font-size: 1.1rem;
+        margin: 15px 0;
+    }
+    .nav_userBtn {
+        min-width: 100%;
+    }
+    .label {
+        font-size: 1.25rem;
     }
 }
 
