@@ -22,6 +22,8 @@ var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 var findOrCreate = require("mongoose-findorcreate");
 
+var flash = require("connect-flash");
+
 var https = require("https");
 
 var _require = require("lodash"),
@@ -38,6 +40,7 @@ var app = express();
 var post = mongoose.createConnection("mongodb://localhost:27017/blogDB");
 var user = mongoose.createConnection("mongodb://localhost:27017/userDB");
 app.set("view engine", "ejs");
+app.use(flash());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -46,7 +49,8 @@ app.use(session({
   secret: "Secret",
   resave: false,
   saveUninitialized: false,
-  maxAge: 5000
+  maxAge: 1000 * 60 * 60 * 2 // 2 hours
+
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -59,11 +63,25 @@ passport.use(new GoogleStrategy({
     googleId: profile.id,
     username: profile.displayName
   }, function (err, user) {
-    console.log("ID: " + profile.id);
-    console.log("Name: " + profile.displayName);
     return cb(err, user);
   });
-})); // Mongoose Schema for posts
+}));
+app.use(function (req, res, next) {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
+app.use(function (req, res, next) {
+  if (req.isAuthenticated()) {
+    var username = req.user.username;
+  } else {
+    var username = "";
+  }
+
+  res.locals.username = username;
+  res.locals.signinStatus = req.isAuthenticated();
+  next();
+}); // Mongoose Schema for posts
 
 var postSchema = new Schema({
   title: String,
@@ -99,46 +117,13 @@ app.get("/auth/google/compose", passport.authenticate("google", {
   res.redirect("/compose");
 });
 app.get("/", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
   Post.find({}, function (err, foundItems) {
     res.render("home", {
-      posts: foundItems,
-      username: username // cityName: weatherData.name,
-      // temperature: temp,
-      // visibility: icon
-
-    }); // const query = "Hyderabad";
-    // const apikey = "83b3269753720654e51dff4fdc6a4ad0";
-    // const unit = "metric";
-    // const url =
-    //   "https://api.openweathermap.org/data/2.5/weather?q=" +
-    //   query +
-    //   "&appid=" +
-    //   apikey +
-    //   "&units=" +
-    //   unit;
-    //  https.get(url, function (response) {
-    //   response.on("data", function (data) {
-    //     var weatherData = JSON.parse(data);
-    //     const temp = weatherData.main.temp;
-    //     const description = weatherData.weather[0].description;
-    //     res.locals.cityName = weatherData.name,
-    //     res.locals.temperature = temp
-    //     var icon =
-    //       "https://openweathermap.org/img/wn/" +
-    //       weatherData.weather[0].icon +
-    //       "@2x.png";
-    //     });
-    //   });
+      posts: foundItems
+    });
   });
 });
 app.get("/logout", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
   req.logout(function (err) {
     if (err) {
       return next(err);
@@ -156,79 +141,42 @@ app.get("/logout", function (req, res) {
   });
 });
 app.get("/login", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-
   if (req.isAuthenticated()) {
-    var username = req.user.username;
+    res.redirect("/");
+  } else {
+    req.session.message = {
+      type: "danger",
+      intro: "Empty Fields",
+      message: "Restart"
+    };
+    res.render("login", {
+      signinStatus: req.isAuthenticated()
+    });
   }
-
-  req.session.message = {
-    type: "danger",
-    intro: "Empty Fields",
-    message: "Restart"
-  };
-  res.render("login", {
-    signinStatus: req.isAuthenticated(),
-    username: username
-  });
 });
 app.get("/register", function (req, res) {
   if (req.isAuthenticated()) {
-    var username = req.user.username;
+    res.redirect("/");
+  } else {
+    res.render("register");
   }
-
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render("register", {
-    signinStatus: 2,
-    username: username
-  });
 });
 app.get("/about", function (req, res) {
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
   res.locals.signinStatus = req.isAuthenticated();
-  res.render("about", {
-    username: username
-  });
+  res.render("about");
 });
 app.get("/contact", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
-  res.render("contact", {
-    username: username
-  });
+  res.render("contact");
 });
 app.get("/compose", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-
   if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
-  if (req.isAuthenticated()) {
-    res.render("compose", {
-      username: username
-    });
+    res.render("compose");
   } else {
-    res.render("login", {
-      username: username
-    });
+    res.render("login");
   }
 });
 app.get("/posts/:name", function (req, res) {
   var requestedPostId = req.params.name;
-  res.locals.signinStatus = req.isAuthenticated();
-
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
   Post.findById({
     _id: requestedPostId
   }, function (err, foundPost) {
@@ -236,8 +184,7 @@ app.get("/posts/:name", function (req, res) {
       res.render("post", {
         postTitle: foundPost.title,
         postContent: foundPost.content,
-        postAuthor: foundPost.author,
-        username: username
+        postAuthor: foundPost.author
       });
     } else {
       console.log(err);
@@ -255,26 +202,20 @@ app.get("/report", function (req, res) {
   });
 });
 app.get("/failure", function (req, res) {
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
+  if (!req.user) {
+    req.flash("success", "Username or password is incorrect.");
+    res.redirect("/login");
   }
-
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render("failure", {
-    username: username
-  });
 });
 app.post("/register", function (req, res) {
   User.register({
     username: req.body.username
   }, req.body.password, function (err, user) {
     if (err) {
-      console.log(err);
+      req.flash("error", err.message);
       res.redirect("/register");
     } else {
-      passport.authenticate("local", {
-        failureRedirect: '/failure'
-      })(req, res, function (err) {
+      passport.authenticate("local")(req, res, function (err) {
         if (!err) {
           res.redirect("/compose");
         } else {
@@ -285,7 +226,6 @@ app.post("/register", function (req, res) {
   });
 });
 app.post("/login", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
   var user = new User({
     username: req.body.username,
     password: req.body.password
@@ -295,17 +235,13 @@ app.post("/login", function (req, res) {
       console.log(err);
     } else {
       passport.authenticate("local", {
-        failureRedirect: '/failure',
-        failureMessage: true
+        successFlash: "Hey, Welcome back",
+        successRedirect: "/compose",
+        failureFlash: true,
+        failureRedirect: "/login"
       })(req, res, function (err) {
         if (!err) {
           res.redirect("/compose");
-        } else if (!user) {
-          res.json({
-            success: false,
-            message: 'username or password incorrect'
-          });
-          console.log("err");
         } else {
           console.log(err);
         }
@@ -326,7 +262,6 @@ app.post("/compose", function (req, res) {
   });
 });
 app.post("/report", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
   var ra = req.body.reportAuthor;
   Post.findOneAndDelete({
     author: req.body.reportAuthor

@@ -22,6 +22,12 @@
       <h5>Haven't registered yet?
         <a href="/register">Register Now</a>
       </h5>
+      <%if(error && error.length > 0){%>
+        <div class="alert alert-danger"><%=error%></div>
+    <%}%>
+        <%if(success && success.length > 0){%>
+        <div class="alert alert-success"><%=success%></div>
+    <%}%>
       <a type="button" href="/auth/google" class="btn btn-light googleBtn" style="margin-top:10px;">
         <span> Sign in with Google</span>
         <ion-icon name="logo-google" class="nav_icon"></ion-icon>
