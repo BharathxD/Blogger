@@ -513,6 +513,15 @@ svg {
     margin: 10px auto;
   }
 
+  .report_btn {
+    display: inline-block;
+  }
+
+  .report-success {
+    margin-bottom: 0;
+    padding: 11px 16px;
+  }
+
 @media screen and (max-width: 992px) {
     .nav_signinBtn {
         margin: 10px auto;
@@ -575,6 +584,10 @@ svg {
     .nav_userBtn {
         min-width: 100%;
     }
+    .report-success {
+        margin-top: 10px;
+        padding: 11px 16px;
+      }
 }
 
 @media screen and (max-width: 768px) {

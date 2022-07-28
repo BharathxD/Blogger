@@ -277,6 +277,7 @@ app.post("/report", function (req, res) {
   Post.findOneAndDelete(
     { author: req.body.reportAuthor },
     function (err, post) {
+      req.flash('success', "We have recieved your report :D ");
       res.redirect("report");
     }
   );

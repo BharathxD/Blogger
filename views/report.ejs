@@ -14,12 +14,24 @@
             <div class="form_input">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="floatingInput" placeholder="Title" name="reportAuthor"
-                        autocomplete="off">
+                        autocomplete="off" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-danger btn-lg" value="report" name="reportBtn" class="btn btn-dark"
             id="liveToastBtn">Report</button>
+            <div class="report_btn">
+            <%if(error && error.length> 0){%>
+                <div class="alert alert-danger">
+                    <%=error%>
+                </div>
+                <%}%>
+                    <%if(success && success.length> 0){%>
+                        <div class="alert alert-success report-success">
+                            <%=success%>
+                        </div>
+                        <%}%>
+                    </div>
         </form>
-        </div>        
-        </main>
-        <%- include("partials/footer"); -%>
+    </div>
+    </main>
+    <%- include("partials/footer"); -%>
