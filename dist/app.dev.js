@@ -55,7 +55,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
   clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
   clientSecret: "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",
-  callbackURL: "http://localhost:3000/auth/google/compose"
+  callbackURL: "https://blogger-by-bharath.herokuapp.com/auth/google/compose"
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
