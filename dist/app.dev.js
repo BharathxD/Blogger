@@ -53,9 +53,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: "http://localhost:3000/auth/google/compose"
+  clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
+  clientSecret: "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",
+  callbackURL: "https://blogger-by-bharath.herokuapp.com/auth/google/compose"
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
