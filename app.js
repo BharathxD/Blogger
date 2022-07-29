@@ -86,6 +86,7 @@ const postSchema = new Schema({
 // Mongoose Schema for user
 
 const userSchema = new Schema({
+  _id: String,
   email: String,
   password: String,
   googleId: String,
@@ -174,17 +175,20 @@ app.get("/compose", (req, res) => {
     res.render("login");
   }
 });
+
 app.get("/posts/:name", (req, res) => {
-  const requestedPostId = req.params.name;
+  var requestedPostId = req.params.name;
   Post.findById({ _id: requestedPostId }, (err, foundPost) => {
     if (!err) {
       res.render("post", {
         postTitle: foundPost.title,
         postContent: foundPost.content,
         postAuthor: foundPost.author,
-      });
-    } else {
-      console.log("err");
+      }
+      );
+    } 
+    else {
+      console.log(err);
     }
   });
 });

@@ -91,6 +91,7 @@ var postSchema = new Schema({
 }); // Mongoose Schema for user
 
 var userSchema = new Schema({
+  _id: String,
   email: String,
   password: String,
   googleId: String,
@@ -180,7 +181,7 @@ app.get("/posts/:name", function (req, res) {
         postAuthor: foundPost.author
       });
     } else {
-      console.log("err");
+      console.log(err);
     }
   });
 });
