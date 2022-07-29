@@ -64,22 +64,19 @@ passport.use(new GoogleStrategy({
     return cb(err, user);
   });
 }));
-app.use(function (req, res, next) {
-  res.locals.error = req.flash("error");
-  res.locals.success = req.flash("success");
-  next();
-});
-app.use(function (req, res, next) {
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  } else {
-    var username = "";
-  }
 
-  res.locals.username = username;
-  res.locals.signinStatus = req.isAuthenticated();
-  next();
-}); // Mongoose Schema for posts
+var headerStatus = require("./routes/HeaderStatus.js"); // Updates the changes in the Header
+
+
+var authenticate = require("./routes/authenticate.js"); // Containes Google Authentication routes
+
+
+var useFlash = require("./routes/flash.js"); // Containes the flash messages for login and report routes
+
+
+app.use(authenticate);
+app.use(headerStatus);
+app.use(useFlash); // Mongoose Schema for posts
 
 var postSchema = new Schema({
   title: String,
@@ -106,20 +103,40 @@ passport.deserializeUser(function (id, done) {
     done(err, user);
   });
 });
-app.get("/auth/google", passport.authenticate("google", {
-  scope: ["profile"]
-}));
-app.get("/auth/google/compose", passport.authenticate("google", {
-  failureRedirect: "/login"
-}), function (req, res) {
-  res.redirect("/compose");
-});
 app.get("/", function (req, res) {
   Post.find({}, function (err, foundItems) {
     res.render("home", {
       posts: foundItems
     });
   });
+});
+app.get("/about", function (req, res) {
+  res.locals.signinStatus = req.isAuthenticated();
+  res.render("about");
+});
+app.get("/contact", function (req, res) {
+  res.render("contact");
+});
+app.get("/register", function (req, res) {
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    res.render("register");
+  }
+});
+app.get("/login", function (req, res) {
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    req.session.message = {
+      type: "danger",
+      intro: "Empty Fields",
+      message: "Restart"
+    };
+    res.render("login", {
+      signinStatus: req.isAuthenticated()
+    });
+  }
 });
 app.get("/logout", function (req, res) {
   req.logout(function (err) {
@@ -137,34 +154,6 @@ app.get("/logout", function (req, res) {
       }, 0);
     }
   });
-});
-app.get("/login", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.redirect("/");
-  } else {
-    req.session.message = {
-      type: "danger",
-      intro: "Empty Fields",
-      message: "Restart"
-    };
-    res.render("login", {
-      signinStatus: req.isAuthenticated()
-    });
-  }
-});
-app.get("/register", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.redirect("/");
-  } else {
-    res.render("register");
-  }
-});
-app.get("/about", function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render("about");
-});
-app.get("/contact", function (req, res) {
-  res.render("contact");
 });
 app.get("/compose", function (req, res) {
   if (req.isAuthenticated()) {
@@ -185,7 +174,7 @@ app.get("/posts/:name", function (req, res) {
         postAuthor: foundPost.author
       });
     } else {
-      console.log("err at line 193");
+      console.log("err");
     }
   });
 });
@@ -198,12 +187,6 @@ app.get("/report", function (req, res) {
   res.render("report", {
     username: username
   });
-});
-app.get("/failure", function (req, res) {
-  if (!req.user) {
-    req.flash("success", "Username or password is incorrect.");
-    res.redirect("/login");
-  }
 });
 app.post("/register", function (req, res) {
   User.register({
@@ -233,7 +216,7 @@ app.post("/login", function (req, res) {
       console.log(err);
     } else {
       passport.authenticate("local", {
-        successFlash: "Hey, Welcome back",
+        successFlash: "Welcome!",
         successRedirect: "/compose",
         failureFlash: true,
         failureRedirect: "/login"
@@ -263,8 +246,8 @@ app.post("/report", function (req, res) {
   var ra = req.body.reportAuthor;
   Post.findOneAndDelete({
     author: req.body.reportAuthor
-  }, function (err, post) {
-    req.flash('success', "We have recieved your report :D ");
+  }, function (err, pot) {
+    req.flash("success", "We have recieved your report :D ");
     res.redirect("report");
   });
 });
