@@ -24,8 +24,6 @@ var findOrCreate = require("mongoose-findorcreate");
 
 var flash = require("connect-flash");
 
-var compression = require('compression');
-
 var https = require("https");
 
 var _require = require("lodash"),
@@ -37,10 +35,6 @@ var _require2 = require("console"),
 
 var posts = [];
 var app = express();
-app.use(compression({
-  level: 6,
-  threshold: 100 * 1000
-}));
 var post = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
 var user = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
 app.set("view engine", "ejs");
@@ -59,9 +53,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: "https://blogger-by-bharath.herokuapp.com/auth/google/compose"
+  clientID: "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
+  clientSecret: "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",
+  callbackURL: "http://localhost:3000/auth/google/compose"
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
@@ -70,19 +64,22 @@ passport.use(new GoogleStrategy({
     return cb(err, user);
   });
 }));
+app.use(function (req, res, next) {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
+app.use(function (req, res, next) {
+  if (req.isAuthenticated()) {
+    var username = req.user.username;
+  } else {
+    var username = "";
+  }
 
-var headerStatus = require("./routes/HeaderStatus.js"); // Updates the changes in the Header
-
-
-var authenticate = require("./routes/authenticate.js"); // Containes Google Authentication routes
-
-
-var useFlash = require("./routes/flash.js"); // Containes the flash messages for login and report routes
-
-
-app.use(authenticate);
-app.use(headerStatus);
-app.use(useFlash); // Mongoose Schema for posts
+  res.locals.username = username;
+  res.locals.signinStatus = req.isAuthenticated();
+  next();
+}); // Mongoose Schema for posts
 
 var postSchema = new Schema({
   title: String,
@@ -91,7 +88,6 @@ var postSchema = new Schema({
 }); // Mongoose Schema for user
 
 var userSchema = new Schema({
-  _id: String,
   email: String,
   password: String,
   googleId: String,
@@ -109,6 +105,14 @@ passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
     done(err, user);
   });
+});
+app.get("/auth/google", passport.authenticate("google", {
+  scope: ["profile"]
+}));
+app.get("/auth/google/compose", passport.authenticate("google", {
+  failureRedirect: "/login"
+}), function (req, res) {
+  res.redirect("/compose");
 });
 app.get("/", function (req, res) {
   Post.find({}, function (err, foundItems) {
@@ -181,7 +185,7 @@ app.get("/posts/:name", function (req, res) {
         postAuthor: foundPost.author
       });
     } else {
-      console.log(err);
+      console.log("err");
     }
   });
 });
@@ -253,7 +257,7 @@ app.post("/report", function (req, res) {
   var ra = req.body.reportAuthor;
   Post.findOneAndDelete({
     author: req.body.reportAuthor
-  }, function (err, pot) {
+  }, function (err, post) {
     req.flash("success", "We have recieved your report :D ");
     res.redirect("report");
   });

@@ -10,18 +10,12 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 const flash = require("connect-flash");
-const compression  = require('compression');
 const https = require("https");
 const { result, functions } = require("lodash");
 const { log } = require("console");
 const posts = [];
 
 const app = express();
-
-app.use(compression({
-  level: 6,
-  threshold: 100 * 1000,
-}));
 
 var post = mongoose.createConnection(
   "mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority"
@@ -48,10 +42,12 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
-      clientSecret: "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",
+        "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
+      clientSecret: 
+      "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",
       callbackURL:
-        "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
+        "http://localhost:3000/auth/google/compose",
+
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
@@ -63,17 +59,22 @@ passport.use(
     }
   )
 );
+app.use((req, res, next) => {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
 
-const headerStatus = require("./routes/HeaderStatus.js");
-// Updates the changes in the Header
-const authenticate = require("./routes/authenticate.js");
-// Containes Google Authentication routes
-const useFlash = require("./routes/flash.js");
-// Containes the flash messages for login and report routes
-
-app.use(authenticate);
-app.use(headerStatus);
-app.use(useFlash);
+app.use((req, res, next) => {
+  if (req.isAuthenticated()) {
+    var username = req.user.username;
+  } else {
+    var username = "";
+  }
+  res.locals.username = username;
+  res.locals.signinStatus = req.isAuthenticated();
+  next();
+});
 
 // Mongoose Schema for posts
 
@@ -86,7 +87,6 @@ const postSchema = new Schema({
 // Mongoose Schema for user
 
 const userSchema = new Schema({
-  _id: String,
   email: String,
   password: String,
   googleId: String,
@@ -99,17 +99,29 @@ userSchema.plugin(findOrCreate);
 const Post = post.model("Post", postSchema);
 const User = user.model("User", userSchema);
 
-passport.use(User.createStrategy());
+passport.use(User.createStrategy()); 
 
-passport.serializeUser((user, done) => {
+passport.serializeUser( (user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser( (id, done) => {
   User.findById(id, (err, user) => {
     done(err, user);
   });
 });
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+app.get(
+  "/auth/google/compose",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+ (req, res) => {
+    res.redirect("/compose");
+  }
+);
 
 app.get("/", (req, res) => {
   Post.find({}, (err, foundItems) => {
@@ -177,18 +189,16 @@ app.get("/compose", (req, res) => {
 });
 
 app.get("/posts/:name", (req, res) => {
-  var requestedPostId = req.params.name;
+  const requestedPostId = req.params.name;
   Post.findById({ _id: requestedPostId }, (err, foundPost) => {
     if (!err) {
       res.render("post", {
         postTitle: foundPost.title,
         postContent: foundPost.content,
         postAuthor: foundPost.author,
-      }
-      );
-    } 
-    else {
-      console.log(err);
+      });
+    } else {
+      console.log("err");
     }
   });
 });
@@ -265,13 +275,16 @@ app.post("/compose", (req, res) => {
 
 app.post("/report", (req, res) => {
   const ra = req.body.reportAuthor;
-  Post.findOneAndDelete({ author: req.body.reportAuthor }, (err, pot) => {
-    req.flash("success", "We have recieved your report :D ");
-    res.redirect("report");
-  });
+  Post.findOneAndDelete(
+    { author: req.body.reportAuthor },
+   (err, post) => {
+      req.flash("success", "We have recieved your report :D ");
+      res.redirect("report");
+    }
+  );
 });
 
-app.listen(process.env.PORT || 3000, function () {
+app.listen(process.env.PORT || 3000, function(){
   console.log(
     "Express server listening on port %d in %s mode",
     this.address().port,
