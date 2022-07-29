@@ -8,6 +8,8 @@
   /* cursor: none; */
 }
 
+
+
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
 ul[role='list'],
 ol[role='list'] {
@@ -63,7 +65,8 @@ select {
 }
 
 *::selection {
-    text-shadow: 0 0 10px #f2f2f2, 0 0 20px rgb(206 201 201 / 12%);
+    background-color: rgba(0, 0, 0, 0.584);
+    color: #f2f2f2;
 }
 
 footer::selection {
