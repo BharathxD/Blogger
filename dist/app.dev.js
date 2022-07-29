@@ -24,6 +24,8 @@ var findOrCreate = require("mongoose-findorcreate");
 
 var flash = require("connect-flash");
 
+var compression = require('compression');
+
 var https = require("https");
 
 var _require = require("lodash"),
@@ -35,6 +37,10 @@ var _require2 = require("console"),
 
 var posts = [];
 var app = express();
+app.use(compression({
+  level: 6,
+  threshold: 100 * 1000
+}));
 var post = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
 var user = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
 app.set("view engine", "ejs");

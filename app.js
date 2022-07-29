@@ -10,12 +10,18 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 const flash = require("connect-flash");
+const compression  = require('compression');
 const https = require("https");
 const { result, functions } = require("lodash");
 const { log } = require("console");
 const posts = [];
 
 const app = express();
+
+app.use(compression({
+  level: 6,
+  threshold: 100 * 1000,
+}));
 
 var post = mongoose.createConnection(
   "mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority"
