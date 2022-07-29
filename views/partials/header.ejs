@@ -24,18 +24,18 @@
         <div class="collapse navbar-collapse" id="blog-navigation">
            <ul class="navbar-nav me-auto nav_mid">
             <li class="nav-item" id="home">
-              <a class="nav-link nav_item" aria-current="page" href="/">
+              <a class="nav-link nav_item" aria-current="page" href="/" data-blobity-tooltip="Homepage">
                 Home
               </a>
             </li>
             <li class="nav-item" id="about">
-              <a class="nav-link nav_item" href="/about">About</a>
+              <a class="nav-link nav_item" href="/about" data-blobity-tooltip="About This Project">About</a>
             </li>
             <li class="nav-item" id="contact">
-              <a class="nav-link nav_item" href="/contact">Reach Me Out</a>
+              <a class="nav-link nav_item" href="/contact" data-blobity-tooltip="Contact Me!">Reach Me Out</a>
             </li>
             <li class="nav-item" id="contact">
-              <a class="nav-link nav_item" href="/report">Report</a>
+              <a class="nav-link nav_item" href="/report" data-blobity-tooltip="Report :(">Report</a>
             </li>
            </ul>
            <% if (signinStatus===false) { %>
@@ -59,3 +59,4 @@
         </div>
       </div>
     </nav>
+  
