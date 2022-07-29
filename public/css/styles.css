@@ -125,6 +125,7 @@ nav {
 main {
     padding: 50px 50px 80px 50px;
     min-height: 100% !important;
+    height: 90vh;
 }
 
 footer {
@@ -346,6 +347,9 @@ svg {
 }
 
 .transition-fade {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: 0.4s;
     opacity: 1;
   }
