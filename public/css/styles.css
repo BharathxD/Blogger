@@ -5,6 +5,7 @@
 *::after {
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
+  /* cursor: none; */
 }
 
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
@@ -520,9 +521,7 @@ svg {
   .report-success {
     margin-bottom: 0;
     padding: 11px 16px;
-  }
-
-  
+  }  
 
 @media screen and (max-width: 992px) {
     .nav_signinBtn {
