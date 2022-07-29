@@ -346,9 +346,6 @@ svg {
 }
 
 .transition-fade {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: 0.4s;
     opacity: 1;
   }
