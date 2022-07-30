@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-var _ = require("lodash");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -10,11 +9,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 const flash = require("connect-flash");
-const https = require("https");
-const { result, functions } = require("lodash");
-const { log } = require("console");
-const posts = [];
-
+const port = process.env.PORT || 3000;
 const app = express();
 
 var post = mongoose.createConnection(
@@ -42,10 +37,11 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
-      clientSecret: "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",
-      callbackURL:
-        "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
+        "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
+      clientSecret: 
+        "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",
+      callbackURL: 
+        "http://localhost:3000/auth/google/compose",
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
@@ -65,11 +61,10 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   if (req.isAuthenticated()) {
-    var username = req.user.username;
+    res.locals.username = req.user.username;
   } else {
-    var username = "";
+    res.locals.username = "";
   }
-  res.locals.username = username;
   res.locals.signinStatus = req.isAuthenticated();
   next();
 });
@@ -80,6 +75,7 @@ const postSchema = new Schema({
   title: String,
   author: String,
   content: String,
+  timestamp: String,
 });
 
 // Mongoose Schema for user
@@ -89,6 +85,7 @@ const userSchema = new Schema({
   password: String,
   googleId: String,
   username: String,
+  posts: [postSchema],
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -97,13 +94,13 @@ userSchema.plugin(findOrCreate);
 const Post = post.model("Post", postSchema);
 const User = user.model("User", userSchema);
 
-passport.use(User.createStrategy()); 
+passport.use(User.createStrategy());
 
-passport.serializeUser( (user, done) => {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser( (id, done) => {
+passport.deserializeUser((id, done) => {
   User.findById(id, (err, user) => {
     done(err, user);
   });
@@ -116,7 +113,7 @@ app.get(
 app.get(
   "/auth/google/compose",
   passport.authenticate("google", { failureRedirect: "/login" }),
- (req, res) => {
+  (req, res) => {
     res.redirect("/compose");
   }
 );
@@ -138,80 +135,31 @@ app.get("/contact", (req, res) => {
   res.render("contact");
 });
 
-app.get("/register", (req, res) => {
+app.get("/myposts", (req, res) => {
+  User.findById({ _id: req.user._id }, (err, foundUser) => {
+    const storeFoundUser = foundUser.posts;
+    if (!err) { 
+      res.render("userPosts", {
+        posts: storeFoundUser,
+      });
+    } 
+    else {
+      console.log(err);
+    }
+  });
+});
+
+/* Register Route */
+
+app.route("/register") 
+  .get((req, res) => { // GET
   if (req.isAuthenticated()) {
     res.redirect("/");
   } else {
     res.render("register");
   }
-});
-
-app.get("/login", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.redirect("/");
-  } else {
-    req.session.message = {
-      type: "danger",
-      intro: "Empty Fields",
-      message: "Restart",
-    };
-    res.render("login", {
-      signinStatus: req.isAuthenticated(),
-    });
-  }
-});
-
-app.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    } else {
-      setTimeout((err) => {
-        if (!err) {
-          res.redirect("/");
-        }
-        {
-          console.log(err);
-        }
-      }, 0);
-    }
-  });
-});
-
-app.get("/compose", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.render("compose");
-  } else {
-    res.render("login");
-  }
-});
-
-app.get("/posts/:name", (req, res) => {
-  const requestedPostId = req.params.name;
-  Post.findById({ _id: requestedPostId }, (err, foundPost) => {
-    if (!err) {
-      res.render("post", {
-        postTitle: foundPost.title,
-        postContent: foundPost.content,
-        postAuthor: foundPost.author,
-      });
-    } else {
-      console.log("err");
-    }
-  });
-});
-
-app.get("/report", (req, res) => {
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render("report", {
-    username: username,
-  });
-});
-
-app.post("/register", (req, res) => {
+}).
+post((req, res) => { // POST
   User.register(
     { username: req.body.username },
     req.body.password,
@@ -219,11 +167,13 @@ app.post("/register", (req, res) => {
       if (err) {
         req.flash("error", err.message);
         res.redirect("/register");
-      } else {
+      } 
+      else {
         passport.authenticate("local")(req, res, (err) => {
           if (!err) {
             res.redirect("/compose");
-          } else {
+          } 
+          else {
             console.log(err);
           }
         });
@@ -232,7 +182,23 @@ app.post("/register", (req, res) => {
   );
 });
 
-app.post("/login", (req, res) => {
+/* Login Route */
+
+app.route("/login") 
+.get((req, res) => { // GET
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } 
+  else {
+    req.session.message = {
+      type: "danger",
+      intro: "Empty Fields",
+      message: "Restart",
+    };
+    res.render("login");
+  }
+})
+.post((req, res) => { // POST
   const user = new User({
     username: req.body.username,
     password: req.body.password,
@@ -257,35 +223,105 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.post("/compose", (req, res) => {
+/* Compose Route */
+
+app.route("/compose") 
+.get((req, res) => { // GET
+  if (req.isAuthenticated()) {
+    res.render("compose");
+  } 
+  else {
+    res.render("login");
+  }
+})
+.post((req, res) => { // POST 
+  User.findById(req.user.id, (err, foundUser) => {
+    if (err) {
+      console.log(err);
+      res.redirect("/compose");
+    } else {
+  const currentDate = new Date();
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const date =
+  currentDate.getDate() 
+    + "th " +
+  monthNames[currentDate.getMonth()] 
+    + " " +
+  currentDate.getFullYear();
+
   const post = new Post({
     title: req.body.inputTitle,
     author: req.user.username,
     content: req.body.textAreaPost,
+    timestamp: date,
   });
-
+  foundUser.posts.push(post);
+  foundUser.save();
   post.save((err) => {
     if (!err) {
       res.redirect("/");
     }
   });
+}
+});
 });
 
-app.post("/report", (req, res) => {
-  const ra = req.body.reportAuthor;
-  Post.findOneAndDelete(
-    { author: req.body.reportAuthor },
-   (err, post) => {
-      req.flash("success", "We have recieved your report :D ");
-      res.redirect("report");
+/* Report Route */
+
+app.route("/report")
+.get((req, res) => {  // GET
+  res.render("report");
+})
+.post((req, res) => { // POST 
+  Post.findOneAndDelete({ author: req.body.reportAuthor }, (err, post) => {
+    req.flash("success", "We have recieved your report :D ");
+    res.redirect("report");
+  });
+});
+
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    } 
+    else {
+      res.redirect("/");
     }
-  );
+  });
 });
 
-app.listen(process.env.PORT || 3000, function(){
+app.get("/posts/:name", (req, res) => {
+  Post.findById({ _id: req.params.name }, (err, foundPost) => {
+    if (!err) {
+      res.render("post", {
+        postTitle: foundPost.title,
+        postContent: foundPost.content,
+        postAuthor: foundPost.author,
+        postTime: foundPost.timestamp,
+      });
+    } 
+    else {
+      console.log(err);
+    }
+  });
+});
+
+app.listen(port, function () {
   console.log(
-    "Express server listening on port %d in %s mode",
-    this.address().port,
-    app.settings.env
+    "Express server started"
   );
 });

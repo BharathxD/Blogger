@@ -1,68 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
-/* Box sizing rules */
+
+/* ---------------------- CSS Reset Starts ---------------------- */
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
-  /* cursor: none; */
 }
-
-
-
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
 ul[role='list'],
 ol[role='list'] {
   list-style: none;
 }
-
-/* Set core root defaults */
 html:focus-within {
   scroll-behavior: smooth;
 }
-
-/* Set core body defaults */
 body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
 }
-
-/* A elements that don't have a class get default styles */
 a:not([class]) {
   text-decoration-skip-ink: auto;
 }
-
-/* Make images easier to work with */
 img,
 picture {
   max-width: 100%;
   display: block;
 }
-
-/* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
 select {
   font: inherit;
 }
-
-/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
    scroll-behavior: auto;
   }
-  
-  *,
-  *::before,
-  *::after {
+*,
+*::before,
+*::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------- CSS Reset Ends ---------------------- */
 
 *::selection {
     background-color: rgba(0, 0, 0, 0.584);
@@ -124,6 +110,17 @@ nav {
 .post {
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+.post_container p::selection {
+    background-color: #EB1D36;
+    color: #fff;
+}
+
+.post_container h1::selection {
+    text-shadow: none;
+    background-color: #21325E;
+    color: #fff;
 }
 
 main {
@@ -195,13 +192,11 @@ footer {
 }
 
 .about_container p::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     background-color: #eb1d35;
     color: #fff;
 }
 
 .about_container h1::selection, li::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     background-color: #21325E;
     text-shadow: none;
     color: #fff;
@@ -223,19 +218,6 @@ footer {
     font-size: 1.25rem;
     margin: 20px auto;
     transition: 0.5s;
-}
-
-.post_container p::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
-    background-color: #EB1D36;
-    color: #fff;
-}
-
-.post_container h1::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
-    text-shadow: none;
-    background-color: #21325E;
-    color: #fff;
 }
 
 .contact_container button{
@@ -278,13 +260,11 @@ footer {
 }
 
 .post p::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     background-color: #EB1D36;
     color: #fff;
 }
 
 .post h2::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     text-shadow: none;
     background-color: #21325E;
     color: #fff;
@@ -295,13 +275,11 @@ footer {
 }
 
 .hero_container p::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     background-color: #EB1D36;
     color: #fff;
 }
 
 .hero_container h1::selection {
-    /* text-shadow: 0 0 6px #eb1d35, 0 0 20px rgb(206 201 201 / 12%); */
     text-shadow: none;
     background-color: #21325E;
     color: #fff;
@@ -525,6 +503,16 @@ svg {
     margin-bottom: 0;
     padding: 11px 16px;
   }  
+
+  .post .time {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .post_container .time {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
 
 @media screen and (max-width: 992px) {
     .nav_signinBtn {

@@ -4,8 +4,6 @@ var express = require("express");
 
 var bodyParser = require("body-parser");
 
-var _ = require("lodash");
-
 var ejs = require("ejs");
 
 var mongoose = require("mongoose");
@@ -24,16 +22,7 @@ var findOrCreate = require("mongoose-findorcreate");
 
 var flash = require("connect-flash");
 
-var https = require("https");
-
-var _require = require("lodash"),
-    result = _require.result,
-    functions = _require.functions;
-
-var _require2 = require("console"),
-    log = _require2.log;
-
-var posts = [];
+var port = process.env.PORT || 3000;
 var app = express();
 var post = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
 var user = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
@@ -53,9 +42,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: "https://blogger-by-bharath.herokuapp.com/auth/google/compose"
+  clientID: "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
+  clientSecret: "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",
+  callbackURL: "http://localhost:3000/auth/google/compose"
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
@@ -71,12 +60,11 @@ app.use(function (req, res, next) {
 });
 app.use(function (req, res, next) {
   if (req.isAuthenticated()) {
-    var username = req.user.username;
+    res.locals.username = req.user.username;
   } else {
-    var username = "";
+    res.locals.username = "";
   }
 
-  res.locals.username = username;
   res.locals.signinStatus = req.isAuthenticated();
   next();
 }); // Mongoose Schema for posts
@@ -84,14 +72,16 @@ app.use(function (req, res, next) {
 var postSchema = new Schema({
   title: String,
   author: String,
-  content: String
+  content: String,
+  timestamp: String
 }); // Mongoose Schema for user
 
 var userSchema = new Schema({
   email: String,
   password: String,
   googleId: String,
-  username: String
+  username: String,
+  posts: [postSchema]
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
@@ -128,78 +118,32 @@ app.get("/about", function (req, res) {
 app.get("/contact", function (req, res) {
   res.render("contact");
 });
-app.get("/register", function (req, res) {
+app.get("/myposts", function (req, res) {
+  User.findById({
+    _id: req.user._id
+  }, function (err, foundUser) {
+    var storeFoundUser = foundUser.posts;
+
+    if (!err) {
+      res.render("userPosts", {
+        posts: storeFoundUser
+      });
+    } else {
+      console.log(err);
+    }
+  });
+});
+/* Register Route */
+
+app.route("/register").get(function (req, res) {
+  // GET
   if (req.isAuthenticated()) {
     res.redirect("/");
   } else {
     res.render("register");
   }
-});
-app.get("/login", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.redirect("/");
-  } else {
-    req.session.message = {
-      type: "danger",
-      intro: "Empty Fields",
-      message: "Restart"
-    };
-    res.render("login", {
-      signinStatus: req.isAuthenticated()
-    });
-  }
-});
-app.get("/logout", function (req, res) {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    } else {
-      setTimeout(function (err) {
-        if (!err) {
-          res.redirect("/");
-        }
-
-        {
-          console.log(err);
-        }
-      }, 0);
-    }
-  });
-});
-app.get("/compose", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.render("compose");
-  } else {
-    res.render("login");
-  }
-});
-app.get("/posts/:name", function (req, res) {
-  var requestedPostId = req.params.name;
-  Post.findById({
-    _id: requestedPostId
-  }, function (err, foundPost) {
-    if (!err) {
-      res.render("post", {
-        postTitle: foundPost.title,
-        postContent: foundPost.content,
-        postAuthor: foundPost.author
-      });
-    } else {
-      console.log("err");
-    }
-  });
-});
-app.get("/report", function (req, res) {
-  if (req.isAuthenticated()) {
-    var username = req.user.username;
-  }
-
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render("report", {
-    username: username
-  });
-});
-app.post("/register", function (req, res) {
+}).post(function (req, res) {
+  // POST
   User.register({
     username: req.body.username
   }, req.body.password, function (err, user) {
@@ -217,7 +161,22 @@ app.post("/register", function (req, res) {
     }
   });
 });
-app.post("/login", function (req, res) {
+/* Login Route */
+
+app.route("/login").get(function (req, res) {
+  // GET
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    req.session.message = {
+      type: "danger",
+      intro: "Empty Fields",
+      message: "Restart"
+    };
+    res.render("login");
+  }
+}).post(function (req, res) {
+  // POST
   var user = new User({
     username: req.body.username,
     password: req.body.password
@@ -241,20 +200,51 @@ app.post("/login", function (req, res) {
     }
   });
 });
-app.post("/compose", function (req, res) {
-  var post = new Post({
-    title: req.body.inputTitle,
-    author: req.user.username,
-    content: req.body.textAreaPost
-  });
-  post.save(function (err) {
-    if (!err) {
-      res.redirect("/");
+/* Compose Route */
+
+app.route("/compose").get(function (req, res) {
+  // GET
+  if (req.isAuthenticated()) {
+    res.render("compose");
+  } else {
+    res.render("login");
+  }
+}).post(function (req, res) {
+  // POST 
+  User.findById(req.user.id, function (err, foundUser) {
+    if (err) {
+      console.log(err);
+      res.redirect("/compose");
+    } else {
+      var currentDate = new Date();
+      var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var date = currentDate.getDate() + "th " + monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear();
+
+      var _post = new Post({
+        title: req.body.inputTitle,
+        author: req.user.username,
+        content: req.body.textAreaPost,
+        timestamp: date
+      });
+
+      foundUser.posts.push(_post);
+      foundUser.save();
+
+      _post.save(function (err) {
+        if (!err) {
+          res.redirect("/");
+        }
+      });
     }
   });
 });
-app.post("/report", function (req, res) {
-  var ra = req.body.reportAuthor;
+/* Report Route */
+
+app.route("/report").get(function (req, res) {
+  // GET
+  res.render("report");
+}).post(function (req, res) {
+  // POST 
   Post.findOneAndDelete({
     author: req.body.reportAuthor
   }, function (err, post) {
@@ -262,6 +252,31 @@ app.post("/report", function (req, res) {
     res.redirect("report");
   });
 });
-app.listen(process.env.PORT || 3000, function () {
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+app.get("/logout", function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    } else {
+      res.redirect("/");
+    }
+  });
+});
+app.get("/posts/:name", function (req, res) {
+  Post.findById({
+    _id: req.params.name
+  }, function (err, foundPost) {
+    if (!err) {
+      res.render("post", {
+        postTitle: foundPost.title,
+        postContent: foundPost.content,
+        postAuthor: foundPost.author,
+        postTime: foundPost.timestamp
+      });
+    } else {
+      console.log(err);
+    }
+  });
+});
+app.listen(port, function () {
+  console.log("Express server started");
 });
