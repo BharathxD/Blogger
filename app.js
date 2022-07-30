@@ -37,11 +37,11 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        "160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com",
+        "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
       clientSecret: 
-        "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",
+        "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",
       callbackURL: 
-        "http://localhost:3000/auth/google/compose",
+        "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
