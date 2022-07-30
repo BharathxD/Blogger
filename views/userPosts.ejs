@@ -6,7 +6,7 @@
             <div class="h-100 p-5 text-bg-dark rounded-3 post">
               <h2> <%= post.title %> </h2>
               <h5>by you <span class="time">on <%= post.timestamp %></span> </h5>
-              <p><%= post.content %></p>
+              <%= post.content %>
               <a href="/delete/<%=post._id%>">
                 Delete
               </a>
