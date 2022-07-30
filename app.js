@@ -139,12 +139,12 @@ app.get("/myposts", (req, res) => {
   User.findById({ _id: req.user._id }, (err, foundUser) => {
     const storeFoundUser = foundUser.posts;
     if (!err) { 
-      res.render("userPosts", {
-        posts: storeFoundUser,
-      });
-    } 
+        res.render("userPosts", {
+          posts: storeFoundUser,
+        });
+    }
     else {
-      console.log(err);
+      console.log("Post not found");
     }
   });
 });
@@ -313,6 +313,17 @@ app.get("/posts/:name", (req, res) => {
         postAuthor: foundPost.author,
         postTime: foundPost.timestamp,
       });
+    } 
+    else {
+      console.log(err);
+    }
+  });
+});
+
+app.get("/delete/:name", (req, res) => {
+  Post.findByIdAndRemove({ _id: req.params.name }, (err, foundPost) => {
+    if (!err) {
+      res.redirect("/");
     } 
     else {
       console.log(err);

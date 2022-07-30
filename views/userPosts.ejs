@@ -1,18 +1,17 @@
 <%- include("partials/header"); -%>
 <main id="swup" class="transition-fade">
   <div class="post_container">
-    <% if (posts === undefined){ %>
-    <h4>You haven't posted any blogs/news yet</h4>
-    <% } else { %>
-        <h2>My Posts: </h2>
+            <h2>My Posts: </h2>
         <% posts.reverse().forEach(function(post){ %>
             <div class="h-100 p-5 text-bg-dark rounded-3 post">
               <h2> <%= post.title %> </h2>
               <h5>by you <span class="time">on <%= post.timestamp %></span> </h5>
               <p><%= post.content %></p>
+              <a href="/delete/<%=post._id%>">
+                Delete
+              </a>
               </div>
-            <% }); %>
-    <% } %>
+              <% }); %>
   </div>
 </main>
 <%-include('partials/footer') %>

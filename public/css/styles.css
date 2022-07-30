@@ -514,6 +514,7 @@ svg {
     font-weight: 400;
   }
 
+
 @media screen and (max-width: 992px) {
     .nav_signinBtn {
         margin: 10px auto;
