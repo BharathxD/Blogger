@@ -1,39 +1,42 @@
 "use strict";
 
-var express = require("express");
+var express = require('express');
 
-var bodyParser = require("body-parser");
+var bodyParser = require('body-parser');
 
-var ejs = require("ejs");
+var ejs = require('ejs');
 
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var passport = require("passport");
+var passport = require('passport');
 
-var session = require("express-session");
+var session = require('express-session');
 
-var passportLocalMongoose = require("passport-local-mongoose");
+var passportLocalMongoose = require('passport-local-mongoose');
 
-var GoogleStrategy = require("passport-google-oauth20").Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-var findOrCreate = require("mongoose-findorcreate");
+var findOrCreate = require('mongoose-findorcreate');
 
-var flash = require("connect-flash");
+var flash = require('connect-flash');
 
 var port = process.env.PORT || 3000;
+
+var date = require(__dirname + '/public/js/date.js');
+
 var app = express();
-var post = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority");
-var user = mongoose.createConnection("mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority");
-app.set("view engine", "ejs");
+var post = mongoose.createConnection('mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority');
+var user = mongoose.createConnection('mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority');
+app.set('view engine', 'ejs');
 app.use(flash());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(express["static"]("public"));
+app.use(express["static"]('public'));
 app.use(session({
-  secret: "Secret",
+  secret: 'Secret',
   resave: false,
   saveUninitialized: false,
   maxAge: 1000 * 60 * 60 * 2 // 2 hours
@@ -42,9 +45,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: "160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: "https://blogger-by-bharath.herokuapp.com/auth/google/compose"
+  clientID: '160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com',
+  clientSecret: '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',
+  callbackURL: 'https://blogger-by-bharath.herokuapp.com/auth/google/compose'
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
@@ -54,15 +57,15 @@ passport.use(new GoogleStrategy({
   });
 }));
 app.use(function (req, res, next) {
-  res.locals.error = req.flash("error");
-  res.locals.success = req.flash("success");
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
   next();
 });
 app.use(function (req, res, next) {
   if (req.isAuthenticated()) {
     res.locals.username = req.user.username;
   } else {
-    res.locals.username = "";
+    res.locals.username = '';
   }
 
   res.locals.signinStatus = req.isAuthenticated();
@@ -85,8 +88,8 @@ var userSchema = new Schema({
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
-var Post = post.model("Post", postSchema);
-var User = user.model("User", userSchema);
+var Post = post.model('Post', postSchema);
+var User = user.model('User', userSchema);
 passport.use(User.createStrategy());
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -96,51 +99,51 @@ passport.deserializeUser(function (id, done) {
     done(err, user);
   });
 });
-app.get("/auth/google", passport.authenticate("google", {
-  scope: ["profile"]
+app.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile']
 }));
-app.get("/auth/google/compose", passport.authenticate("google", {
-  failureRedirect: "/login"
+app.get('/auth/google/compose', passport.authenticate('google', {
+  failureRedirect: '/login'
 }), function (req, res) {
-  res.redirect("/compose");
+  res.redirect('/compose');
 });
-app.get("/", function (req, res) {
+app.get('/', function (req, res) {
   Post.find({}, function (err, foundItems) {
-    res.render("home", {
+    res.render('home', {
       posts: foundItems
     });
   });
 });
-app.get("/about", function (req, res) {
+app.get('/about', function (req, res) {
   res.locals.signinStatus = req.isAuthenticated();
-  res.render("about");
+  res.render('about');
 });
-app.get("/contact", function (req, res) {
-  res.render("contact");
+app.get('/contact', function (req, res) {
+  res.render('contact');
 });
-app.get("/myposts", function (req, res) {
+app.get('/myposts', function (req, res) {
   User.findById({
     _id: req.user._id
   }, function (err, foundUser) {
     var storeFoundUser = foundUser.posts;
 
     if (!err) {
-      res.render("userPosts", {
+      res.render('userPosts', {
         posts: storeFoundUser
       });
     } else {
-      console.log("Post not found");
+      console.log('Post not found');
     }
   });
 });
 /* Register Route */
 
-app.route("/register").get(function (req, res) {
+app.route('/register').get(function (req, res) {
   // GET
   if (req.isAuthenticated()) {
-    res.redirect("/");
+    res.redirect('/');
   } else {
-    res.render("register");
+    res.render('register');
   }
 }).post(function (req, res) {
   // POST
@@ -148,12 +151,12 @@ app.route("/register").get(function (req, res) {
     username: req.body.username
   }, req.body.password, function (err, user) {
     if (err) {
-      req.flash("error", err.message);
-      res.redirect("/register");
+      req.flash('error', err.message);
+      res.redirect('/register');
     } else {
-      passport.authenticate("local")(req, res, function (err) {
+      passport.authenticate('local')(req, res, function (err) {
         if (!err) {
-          res.redirect("/compose");
+          res.redirect('/compose');
         } else {
           console.log(err);
         }
@@ -163,17 +166,17 @@ app.route("/register").get(function (req, res) {
 });
 /* Login Route */
 
-app.route("/login").get(function (req, res) {
+app.route('/login').get(function (req, res) {
   // GET
   if (req.isAuthenticated()) {
-    res.redirect("/");
+    res.redirect('/');
   } else {
     req.session.message = {
-      type: "danger",
-      intro: "Empty Fields",
-      message: "Restart"
+      type: 'danger',
+      intro: 'Empty Fields',
+      message: 'Restart'
     };
-    res.render("login");
+    res.render('login');
   }
 }).post(function (req, res) {
   // POST
@@ -185,14 +188,14 @@ app.route("/login").get(function (req, res) {
     if (err) {
       console.log(err);
     } else {
-      passport.authenticate("local", {
-        successFlash: "Welcome!",
-        successRedirect: "/compose",
+      passport.authenticate('local', {
+        successFlash: 'Welcome!',
+        successRedirect: '/compose',
         failureFlash: true,
-        failureRedirect: "/login"
+        failureRedirect: '/login'
       })(req, res, function (err) {
         if (!err) {
-          res.redirect("/compose");
+          res.redirect('/compose');
         } else {
           console.log(err);
         }
@@ -202,24 +205,20 @@ app.route("/login").get(function (req, res) {
 });
 /* Compose Route */
 
-app.route("/compose").get(function (req, res) {
+app.route('/compose').get(function (req, res) {
   // GET
   if (req.isAuthenticated()) {
-    res.render("compose");
+    res.render('compose');
   } else {
-    res.render("login");
+    res.render('login');
   }
 }).post(function (req, res) {
   // POST 
   User.findById(req.user.id, function (err, foundUser) {
     if (err) {
       console.log(err);
-      res.redirect("/compose");
+      res.redirect('/compose');
     } else {
-      var currentDate = new Date();
-      var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      var date = currentDate.getDate() + "th " + monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear();
-
       var _post = new Post({
         title: req.body.inputTitle,
         author: req.user.username,
@@ -232,7 +231,7 @@ app.route("/compose").get(function (req, res) {
 
       _post.save(function (err) {
         if (!err) {
-          res.redirect("/");
+          res.redirect('/');
         }
       });
     }
@@ -240,33 +239,33 @@ app.route("/compose").get(function (req, res) {
 });
 /* Report Route */
 
-app.route("/report").get(function (req, res) {
+app.route('/report').get(function (req, res) {
   // GET
-  res.render("report");
+  res.render('report');
 }).post(function (req, res) {
   // POST 
   Post.findOneAndDelete({
     author: req.body.reportAuthor
   }, function (err, post) {
-    req.flash("success", "We have recieved your report :D ");
-    res.redirect("report");
+    req.flash('success', 'We have recieved your report :D ');
+    res.redirect('report');
   });
 });
-app.get("/logout", function (req, res) {
+app.get('/logout', function (req, res) {
   req.logout(function (err) {
     if (err) {
       return next(err);
     } else {
-      res.redirect("/");
+      res.redirect('/');
     }
   });
 });
-app.get("/posts/:name", function (req, res) {
+app.get('/posts/:name', function (req, res) {
   Post.findById({
     _id: req.params.name
   }, function (err, foundPost) {
     if (!err) {
-      res.render("post", {
+      res.render('post', {
         postTitle: foundPost.title,
         postContent: foundPost.content,
         postAuthor: foundPost.author,
@@ -277,17 +276,17 @@ app.get("/posts/:name", function (req, res) {
     }
   });
 });
-app.get("/delete/:name", function (req, res) {
+app.get('/delete/:name', function (req, res) {
   Post.findByIdAndRemove({
     _id: req.params.name
   }, function (err, foundPost) {
     if (!err) {
-      res.redirect("/");
+      res.redirect('/');
     } else {
       console.log(err);
     }
   });
 });
 app.listen(port, function () {
-  console.log("Express server started");
+  console.log('Express server started');
 });
