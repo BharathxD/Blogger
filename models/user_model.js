@@ -4,7 +4,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const findOrCreate = require('mongoose-findorcreate');
 
 var user = mongoose.createConnection(
-  'mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority'
+  'mongodb+srv://Bharath_xD:'+process.env.DB_PASS+'@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority'
 );
 
 const postSchema = new Schema({
