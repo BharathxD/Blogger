@@ -1,4 +1,5 @@
-function dateFunction() {const currentDate = new Date();
+function date() {
+  const currentDate = new Date();
   const monthNames = [
     "January",
     "February",
@@ -15,15 +16,12 @@ function dateFunction() {const currentDate = new Date();
   ];
 
   const date =
-  currentDate.getDate() 
-    + "th " +
-  monthNames[currentDate.getMonth()] 
-    + " " +
-  currentDate.getFullYear();
-
-return date;
+    currentDate.getDate() +
+    "th " +
+    monthNames[currentDate.getMonth()] +
+    " " +
+    currentDate.getFullYear();
+  return date;
 }
 
-module.exports = dateFunction();
-
-
+module.exports = date();

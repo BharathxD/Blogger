@@ -1,24 +1,28 @@
+'use strict'
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const ejs = require('ejs');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const passport = require('passport');
 const session = require('express-session');
-const passportLocalMongoose = require('passport-local-mongoose');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const findOrCreate = require('mongoose-findorcreate');
 const flash = require('connect-flash');
 const port = process.env.PORT || 3000;
-const date = require(__dirname+'/public/js/date.js');
 const app = express();
 
-var post = mongoose.createConnection(
-  'mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority'
-);
-var user = mongoose.createConnection(
-  'mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority'
-);
+/* Importing Routes */
+
+const home = require('./routes/home.js');
+const about = require('./routes/about.js');
+const contact = require('./routes/contact.js');
+const myposts = require('./routes/userPosts.js');
+const compose = require('./routes/compose.js');
+const report = require('./routes/report.js');
+const posts = require('./routes/posts.js');
+const deletePost = require('./routes/deletePost.js');
+const login = require('./routes/login.js');
+const register = require('./routes/register.js');
+const googleAuth = require('./routes/googleAuth.js');
+const User = require('./models/user_model');
 
 app.set('view engine', 'ejs');
 app.use(flash());
@@ -38,11 +42,11 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        '160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com',
+        '160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com',
       clientSecret: 
-        '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',
+        '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',
       callbackURL: 
-        'https://blogger-by-bharath.herokuapp.com/auth/google/compose',
+        'http://localhost:3000/auth/google/compose',
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
@@ -54,6 +58,7 @@ passport.use(
     }
   )
 );
+
 app.use((req, res, next) => {
   res.locals.error = req.flash('error');
   res.locals.success = req.flash('success');
@@ -70,31 +75,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Mongoose Schema for posts
-
-const postSchema = new Schema({
-  title: String,
-  author: String,
-  content: String,
-  timestamp: String,
-});
-
-// Mongoose Schema for user
-
-const userSchema = new Schema({
-  email: String,
-  password: String,
-  googleId: String,
-  username: String,
-  posts: [postSchema],
-});
-
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
-
-const Post = post.model('Post', postSchema);
-const User = user.model('User', userSchema);
-
 passport.use(User.createStrategy());
 
 passport.serializeUser((user, done) => {
@@ -107,211 +87,54 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-app.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['profile'] })
-);
-app.get(
-  '/auth/google/compose',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  (req, res) => {
-    res.redirect('/compose');
-  }
-);
+/* Google Authenticator */
 
-app.get('/', (req, res) => {
-  Post.find({}, (err, foundItems) => {
-    res.render('home', {
-      posts: foundItems,
-    });
-  });
-});
+app.use(googleAuth);
 
-app.get('/about', (req, res) => {
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render('about');
-});
+/* Home Route */
 
-app.get('/contact', (req, res) => {
-  res.render('contact');
-});
+app.use(home);
 
-app.get('/myposts', (req, res) => {
-  User.findById({ _id: req.user._id }, (err, foundUser) => {
-    const storeFoundUser = foundUser.posts;
-    if (!err) { 
-        res.render('userPosts', {
-          posts: storeFoundUser,
-        });
-    }
-    else {
-      console.log('Post not found');
-    }
-  });
-});
+/* About Route */
 
-/* Register Route */
+app.use(about);
 
-app.route('/register') 
-  .get((req, res) => { // GET
-  if (req.isAuthenticated()) {
-    res.redirect('/');
-  } else {
-    res.render('register');
-  }
-}).
-post((req, res) => { // POST
-  User.register(
-    { username: req.body.username },
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        req.flash('error', err.message);
-        res.redirect('/register');
-      } 
-      else {
-        passport.authenticate('local')(req, res, (err) => {
-          if (!err) {
-            res.redirect('/compose');
-          } 
-          else {
-            console.log(err);
-          }
-        });
-      }
-    }
-  );
-});
+/* Contact Route */
 
-/* Login Route */
+app.use(contact);
 
-app.route('/login') 
-.get((req, res) => { // GET
-  if (req.isAuthenticated()) {
-    res.redirect('/');
-  } 
-  else {
-    req.session.message = {
-      type: 'danger',
-      intro: 'Empty Fields',
-      message: 'Restart',
-    };
-    res.render('login');
-  }
-})
-.post((req, res) => { // POST
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  req.login(user, (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      passport.authenticate('local', {
-        successFlash: 'Welcome!',
-        successRedirect: '/compose',
-        failureFlash: true,
-        failureRedirect: '/login',
-      })(req, res, (err) => {
-        if (!err) {
-          res.redirect('/compose');
-        } else {
-          console.log(err);
-        }
-      });
-    }
-  });
-});
+/* Route to show users what they've posted */
+
+app.use(myposts);
 
 /* Compose Route */
 
-app.route('/compose') 
-.get((req, res) => { // GET
-  if (req.isAuthenticated()) {
-    res.render('compose');
-  } 
-  else {
-    res.render('login');
-  }
-})
-.post((req, res) => { // POST 
-  User.findById(req.user.id, (err, foundUser) => {
-  if (err) {
-      console.log(err);
-      res.redirect('/compose');
-    } 
-  else {
-    const post = new Post({
-    title: req.body.inputTitle,
-    author: req.user.username,
-    content: req.body.textAreaPost,
-    timestamp: date,
-      });
-  foundUser.posts.push(post);
-  foundUser.save();
-  post.save((err) => {
-    if (!err) {
-      res.redirect('/');
-    }
-  });
-}
-});
-});
+app.use(compose);
 
 /* Report Route */
 
-app.route('/report')
-.get((req, res) => {  // GET
-  res.render('report');
-})
-.post((req, res) => { // POST 
-  Post.findOneAndDelete({ author: req.body.reportAuthor }, (err, post) => {
-    req.flash('success', 'We have recieved your report :D ');
-    res.redirect('report');
-  });
-});
+app.use(report);
 
-app.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    } 
-    else {
-      res.redirect('/');
-    }
-  });
-});
+/* Route for navigating to individual posts */
 
-app.get('/posts/:name', (req, res) => {
-  Post.findById({ _id: req.params.name }, (err, foundPost) => {
-    if (!err) {
-      res.render('post', {
-        postTitle: foundPost.title,
-        postContent: foundPost.content,
-        postAuthor: foundPost.author,
-        postTime: foundPost.timestamp,
-      });
-    } 
-    else {
-      console.log(err);
-    }
-  });
-});
+app.use(posts);
 
-app.get('/delete/:name', (req, res) => {
-  Post.findByIdAndRemove({ _id: req.params.name }, (err, foundPost) => {
-    if (!err) {
-      res.redirect('/');
-    } 
-    else {
-      console.log(err);
-    }
-  });
-});
+/* Route to delete an existing post from the Post schema database */
 
-app.listen(port, function () {
-  console.log(
-    'Express server started'
-  );
+app.use(deletePost);
+
+/* Register Route */
+
+app.use(register);
+
+/* Login Route */
+
+app.use(login);
+
+/* Server */
+
+let http = require("http");
+let server = express().use('/', app);
+http.createServer(server).listen(port, () => {
+  console.log('Listening on '+port);
 });

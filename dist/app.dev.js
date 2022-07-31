@@ -1,34 +1,45 @@
-"use strict";
+'use strict';
 
 var express = require('express');
 
 var bodyParser = require('body-parser');
 
-var ejs = require('ejs');
-
-var mongoose = require('mongoose');
-
-var Schema = mongoose.Schema;
-
 var passport = require('passport');
 
 var session = require('express-session');
 
-var passportLocalMongoose = require('passport-local-mongoose');
-
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-var findOrCreate = require('mongoose-findorcreate');
 
 var flash = require('connect-flash');
 
 var port = process.env.PORT || 3000;
-
-var date = require(__dirname + '/public/js/date.js');
-
 var app = express();
-var post = mongoose.createConnection('mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority');
-var user = mongoose.createConnection('mongodb+srv://Bharath_xD:Saibharat%40123@cluster0.cgaoktp.mongodb.net/userDB?retryWrites=true&w=majority');
+/* Importing Routes */
+
+var home = require('./routes/home.js');
+
+var about = require('./routes/about.js');
+
+var contact = require('./routes/contact.js');
+
+var myposts = require('./routes/userPosts.js');
+
+var compose = require('./routes/compose.js');
+
+var report = require('./routes/report.js');
+
+var posts = require('./routes/posts.js');
+
+var deletePost = require('./routes/deletePost.js');
+
+var login = require('./routes/login.js');
+
+var register = require('./routes/register.js');
+
+var googleAuth = require('./routes/googleAuth.js');
+
+var User = require('./models/user_model');
+
 app.set('view engine', 'ejs');
 app.use(flash());
 app.use(bodyParser.urlencoded({
@@ -45,9 +56,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GoogleStrategy({
-  clientID: '160599315944-c2b9g24bgp8mka1putls852rgivfm8jc.apps.googleusercontent.com',
-  clientSecret: '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',
-  callbackURL: 'https://blogger-by-bharath.herokuapp.com/auth/google/compose'
+  clientID: '160599315944-h6ul8lcq6vb4lhqkl7qv3skmp2r6fhl7.apps.googleusercontent.com',
+  clientSecret: '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',
+  callbackURL: 'http://localhost:3000/auth/google/compose'
 }, function (accessToken, refreshToken, profile, cb) {
   User.findOrCreate({
     googleId: profile.id,
@@ -70,26 +81,7 @@ app.use(function (req, res, next) {
 
   res.locals.signinStatus = req.isAuthenticated();
   next();
-}); // Mongoose Schema for posts
-
-var postSchema = new Schema({
-  title: String,
-  author: String,
-  content: String,
-  timestamp: String
-}); // Mongoose Schema for user
-
-var userSchema = new Schema({
-  email: String,
-  password: String,
-  googleId: String,
-  username: String,
-  posts: [postSchema]
 });
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
-var Post = post.model('Post', postSchema);
-var User = user.model('User', userSchema);
 passport.use(User.createStrategy());
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -99,194 +91,44 @@ passport.deserializeUser(function (id, done) {
     done(err, user);
   });
 });
-app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile']
-}));
-app.get('/auth/google/compose', passport.authenticate('google', {
-  failureRedirect: '/login'
-}), function (req, res) {
-  res.redirect('/compose');
-});
-app.get('/', function (req, res) {
-  Post.find({}, function (err, foundItems) {
-    res.render('home', {
-      posts: foundItems
-    });
-  });
-});
-app.get('/about', function (req, res) {
-  res.locals.signinStatus = req.isAuthenticated();
-  res.render('about');
-});
-app.get('/contact', function (req, res) {
-  res.render('contact');
-});
-app.get('/myposts', function (req, res) {
-  User.findById({
-    _id: req.user._id
-  }, function (err, foundUser) {
-    var storeFoundUser = foundUser.posts;
+/* Google Authenticator */
 
-    if (!err) {
-      res.render('userPosts', {
-        posts: storeFoundUser
-      });
-    } else {
-      console.log('Post not found');
-    }
-  });
-});
-/* Register Route */
+app.use(googleAuth);
+/* Home Route */
 
-app.route('/register').get(function (req, res) {
-  // GET
-  if (req.isAuthenticated()) {
-    res.redirect('/');
-  } else {
-    res.render('register');
-  }
-}).post(function (req, res) {
-  // POST
-  User.register({
-    username: req.body.username
-  }, req.body.password, function (err, user) {
-    if (err) {
-      req.flash('error', err.message);
-      res.redirect('/register');
-    } else {
-      passport.authenticate('local')(req, res, function (err) {
-        if (!err) {
-          res.redirect('/compose');
-        } else {
-          console.log(err);
-        }
-      });
-    }
-  });
-});
-/* Login Route */
+app.use(home);
+/* About Route */
 
-app.route('/login').get(function (req, res) {
-  // GET
-  if (req.isAuthenticated()) {
-    res.redirect('/');
-  } else {
-    req.session.message = {
-      type: 'danger',
-      intro: 'Empty Fields',
-      message: 'Restart'
-    };
-    res.render('login');
-  }
-}).post(function (req, res) {
-  // POST
-  var user = new User({
-    username: req.body.username,
-    password: req.body.password
-  });
-  req.login(user, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      passport.authenticate('local', {
-        successFlash: 'Welcome!',
-        successRedirect: '/compose',
-        failureFlash: true,
-        failureRedirect: '/login'
-      })(req, res, function (err) {
-        if (!err) {
-          res.redirect('/compose');
-        } else {
-          console.log(err);
-        }
-      });
-    }
-  });
-});
+app.use(about);
+/* Contact Route */
+
+app.use(contact);
+/* Route to show users what they've posted */
+
+app.use(myposts);
 /* Compose Route */
 
-app.route('/compose').get(function (req, res) {
-  // GET
-  if (req.isAuthenticated()) {
-    res.render('compose');
-  } else {
-    res.render('login');
-  }
-}).post(function (req, res) {
-  // POST 
-  User.findById(req.user.id, function (err, foundUser) {
-    if (err) {
-      console.log(err);
-      res.redirect('/compose');
-    } else {
-      var _post = new Post({
-        title: req.body.inputTitle,
-        author: req.user.username,
-        content: req.body.textAreaPost,
-        timestamp: date
-      });
-
-      foundUser.posts.push(_post);
-      foundUser.save();
-
-      _post.save(function (err) {
-        if (!err) {
-          res.redirect('/');
-        }
-      });
-    }
-  });
-});
+app.use(compose);
 /* Report Route */
 
-app.route('/report').get(function (req, res) {
-  // GET
-  res.render('report');
-}).post(function (req, res) {
-  // POST 
-  Post.findOneAndDelete({
-    author: req.body.reportAuthor
-  }, function (err, post) {
-    req.flash('success', 'We have recieved your report :D ');
-    res.redirect('report');
-  });
-});
-app.get('/logout', function (req, res) {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    } else {
-      res.redirect('/');
-    }
-  });
-});
-app.get('/posts/:name', function (req, res) {
-  Post.findById({
-    _id: req.params.name
-  }, function (err, foundPost) {
-    if (!err) {
-      res.render('post', {
-        postTitle: foundPost.title,
-        postContent: foundPost.content,
-        postAuthor: foundPost.author,
-        postTime: foundPost.timestamp
-      });
-    } else {
-      console.log(err);
-    }
-  });
-});
-app.get('/delete/:name', function (req, res) {
-  Post.findByIdAndRemove({
-    _id: req.params.name
-  }, function (err, foundPost) {
-    if (!err) {
-      res.redirect('/');
-    } else {
-      console.log(err);
-    }
-  });
-});
-app.listen(port, function () {
-  console.log('Express server started');
+app.use(report);
+/* Route for navigating to individual posts */
+
+app.use(posts);
+/* Route to delete an existing post from the Post schema database */
+
+app.use(deletePost);
+/* Register Route */
+
+app.use(register);
+/* Login Route */
+
+app.use(login);
+/* Server */
+
+var http = require("http");
+
+var server = express().use('/', app);
+http.createServer(server).listen(port, function () {
+  console.log('Listening on ' + port);
 });
