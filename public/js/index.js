@@ -1,14 +1,9 @@
 /* Used Swup for smooth transitions between views */
 
 const swup = new Swup({});
+
 function logout() {
-  setTimeout(function (err) {
-    if (!err) {
-      window.location.reload();
-    } else {
-      console.log(err);
-    }
-  }, 200);
+  setTimeout( (err) => { !err ? window.location.reload() : console.log(err); }, 200);
 }
 
 /* Credits to Blobity :D for an amzing cursor */

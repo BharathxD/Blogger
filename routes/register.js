@@ -1,12 +1,10 @@
 const express = require('express');
-var mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user_model');
 
 router.route('/register') 
-  .get((req, res) => { // GET
+.get((req, res) => { // GET
   if (req.isAuthenticated()) {
     res.redirect('/');
   } else {
@@ -24,12 +22,7 @@ post( (req, res) => { // POST
       } 
       else {
         passport.authenticate('local')(req, res, (err) => {
-          if (!err) {
-            res.redirect('/compose');
-          } 
-          else {
-            console.log(err);
-          }
+         !err ? res.redirect('/compose') : console.log(err);
         });
       }
     }

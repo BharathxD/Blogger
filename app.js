@@ -8,7 +8,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const flash = require("connect-flash");
 const port = process.env.PORT || 3000;
 const app = express();
-require('dotenv').config();
+require("dotenv").config();
 
 /* Importing Routes */
 
@@ -47,18 +47,16 @@ app.use(passport.session());
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        process.env.CLIENT_ID,
-      clientSecret: 
-        process.env.CLIENT_SECRET,
-      callbackURL: 
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL:
         "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
-        { 
-          googleId: profile.id, 
-          username: profile.displayName 
+        {
+          googleId: profile.id,
+          username: profile.displayName,
         },
         (err, user) => {
           return cb(err, user);
@@ -92,21 +90,17 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   logError(err);
-  if (err.statusCode) {
-    res.status(err.statusCode).send({ error: err.message });
-  } else {
-    res.status(500).send({ error: "Something went wrong" });
-  }
+  err.statusCode
+    ? res.status(err.statusCode).send({ error: err.message })
+    : res.status(500).send({ error: "Something went wrong" });
 });
 
 /* Nav elements intialization */
 
 app.use((req, res, next) => {
-  if (req.isAuthenticated()) {
-    res.locals.username = req.user.username;
-  } else {
-    res.locals.username = "";
-  }
+  (req.isAuthenticated())
+    ? (res.locals.username = req.user.username)
+    : (res.locals.username = "");
   res.locals.signinStatus = req.isAuthenticated();
   next();
 });

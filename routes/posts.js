@@ -1,6 +1,4 @@
 const express = require('express');
-var mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const router = express.Router();
 const Post = require('../models/post_model');
 

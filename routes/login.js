@@ -1,23 +1,16 @@
 const express = require('express');
-var mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user_model');  
 
 router.route('/login') 
 .get((req, res) => { // GET
-  if (req.isAuthenticated()) {
-    res.redirect('/');
-  } 
-  else {
+  req.isAuthenticated() ? res.redirect('/') :  res.render('login');
     req.session.message = {
       type: 'danger',
       intro: 'Empty Fields',
       message: 'Restart',
     };
-    res.render('login');
-  }
 })
 .post((req, res) => { // POST
   const user = new User({
@@ -34,11 +27,7 @@ router.route('/login')
         failureFlash: true,
         failureRedirect: '/login',
       })(req, res, (err) => {
-        if (!err) {
-          res.redirect('/compose');
-        } else {
-          console.log(err);
-        }
+        !err ? res.redirect('/compose') : console.log(err);
       });
     }
   });

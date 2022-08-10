@@ -1,6 +1,4 @@
 const express = require('express');
-var mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const router = express.Router();
 const Post = require('../models/post_model');
 const User = require('../models/user_model');
@@ -8,12 +6,7 @@ const date = require('../public/js/date');
 
 router.route('/compose') 
 .get((req, res) => { // GET
-  if (req.isAuthenticated()) {
-    res.render('compose');
-  } 
-  else {
-    res.render('login');
-  }
+  req.isAuthenticated() ? res.render('compose') : res.render('login');
 })
 .post((req, res) => { // POST 
   User.findById(req.user.id, (err, foundUser) => {

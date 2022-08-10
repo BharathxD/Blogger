@@ -1,7 +1,5 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-require('dotenv').config();
-
 var post = mongoose.createConnection(
     'mongodb+srv://Bharath_xD:'+process.env.DB_PASS+'@cluster0.cgaoktp.mongodb.net/blogDB?retryWrites=true&w=majority'
   );
