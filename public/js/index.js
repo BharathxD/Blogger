@@ -1,6 +1,6 @@
 /* Used Swup for smooth transitions between views */
 
-const swup = new Swup();
+const swup = new Swup({});
 function logout() {
   setTimeout(function (err) {
     if (!err) {

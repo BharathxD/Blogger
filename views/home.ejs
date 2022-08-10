@@ -10,6 +10,7 @@
     <a href="/about" class="btn btn-light btn-lg px-4 aboutBtn">About</a>
   </div>
 </div>
+<section>
 <% posts.reverse().forEach(function(post){ %>
       <div class="col-md-6"></div>
       <div class="h-100 p-5 text-bg-dark rounded-3 post">
@@ -23,5 +24,6 @@
       </div>
       <% }); %>
       </div>
+    </section>
     </main>
 <%- include("partials/footer"); -%>
