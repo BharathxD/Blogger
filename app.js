@@ -154,5 +154,5 @@ app.use(login);
 let http = require("http");
 let server = express().use("/", app);
 http.createServer(server).listen(port, () => {
-  console.log("Listening on " + port);
+  console.log(`Listening on ${port}`);
 });
