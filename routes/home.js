@@ -31,6 +31,7 @@ router.get("/", async (req, res) => {
 
 const url = `https://api.openweathermap.org/data/2.5/weather?&lat=${Lat}&lon=${Lon}&appid=${process.env.Weather_API_KEY}&units=metric`;
  https.get(url, (response) => {
+  if(response.statusCode === 200) {
     response.on("data", async (data) => {
       weatherData = await JSON.parse(data);
        cityName =  weatherData.name;
@@ -39,6 +40,10 @@ const url = `https://api.openweathermap.org/data/2.5/weather?&lat=${Lat}&lon=${L
       weatherDescription =  weatherData.weather[0].description;
       weatherIcon = `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
     });
+  }
+  else {
+    weatherStatus = true;
+  }
 });
 
   /* Incorporating all the posts from PostDB into the homescreen at once */
