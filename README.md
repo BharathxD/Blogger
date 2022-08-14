@@ -19,7 +19,7 @@ These are the things I've considered while developing this website
 - This website allows you to post your blogs with just a click
 - It has an user-friendly interface
 - All of your posts are available right on the homescreen
-- Passport JS and Google OAuth 2.0 have been used to encrypt the user details## Run Locally
+- Passport JS and Google OAuth 2.0 have been used to encrypt the user details
 
 ## Run Locally
 
