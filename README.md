@@ -34,7 +34,7 @@ These are the things I've considered while developing this website
 
 - NodeJS with Express Framework
 - **IP Geolocation API** was used to determine the location of the client based on IPv4 or IPv6 address
-- Used **OpenWeather API** for displaying weather information related to client Geolocation
+- Used **OpenWeather API** for displaying weather information related to the client Geolocation
 - PassportJS and GoogleOauth 2.0 have been used to enable users to Log-In/Sign-Up securely 
 - **Database**: MongoDB with Mongoose
 
