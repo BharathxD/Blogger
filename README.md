@@ -21,6 +21,24 @@ These are the things I've considered while developing this website
 - All of your posts are available right on the homescreen
 - Passport JS and Google OAuth 2.0 have been used to encrypt the user details## Run Locally
 
+## Tech Stack
+
+#### Frontend
+
+- HTML
+- CSS/SCSS
+- Embedded JavaScript [EJS]
+- Javascript
+
+#### Backend 
+
+- NodeJS with Express Framework
+- **IP Geolocation API** was used to determine the location of the client based on IPv4 or IPv6 address
+- Used **OpenWeather API** for displaying weather information related to client Geolocation
+- PassportJS and GoogleOauth 2.0 have been used to enable users to Log-In/Sign-Up securely 
+- **Database**: MongoDB with Mongoose
+
+
 ## Run Locally
 
 Clone the project
@@ -63,24 +81,6 @@ To run this project, you will need to add the following environment variables to
 `DB_PASS`    
 `Weather_API_KEY`   
 `IPG_API_KEY`  
-
-## Tech Stack
-
-#### Frontend
-
-- HTML
-- CSS/SCSS
-- Embedded JavaScript [EJS]
-- Javascript
-
-#### Backend 
-
-- NodeJS with Express Framework
-- **IP Geolocation API** was used to determine the location of the client based on IPv4 or IPv6 address
-- Used **OpenWeather API** for displaying weather information related to client Geolocation
-- PassportJS and GoogleOauth 2.0 have been used to enable users to Log-In/Sign-Up securely 
-- **Database**: MongoDB with Mongoose
-
 
 ## Contributions
 
