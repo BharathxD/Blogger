@@ -1,7 +1,7 @@
 
 
 
-![App Screenshot](https://i.postimg.cc/436Pg3W5/Screenshot-2022-08-10-at-11-53-20-PM.png)
+![App Screenshot](https://i.postimg.cc/hvFScvBv/Screenshot-2022-08-15-at-12-36-02-AM.png)
 
 # Blogger
 
@@ -19,7 +19,7 @@ These are the things I've considered while developing this website
 - This website allows you to post your blogs with just a click
 - It has an user-friendly interface
 - All of your posts are available right on the homescreen
-- Passport JS and Google OAuth 2.0 have been used to encrypt the user details
+- Passport JS and Google OAuth 2.0 have been used to encrypt the user details## Run Locally
 
 ## Run Locally
 
@@ -59,8 +59,10 @@ In order to run the code simultaneously while editing, run the following command
 To run this project, you will need to add the following environment variables to your .env file
 
 `CLIENT_ID`  
-`CLIENT_SECRET`
-
+`CLIENT_SECRET`  
+`DB_PASS`    
+`Weather_API_KEY`   
+`IPG_API_KEY`  
 
 ## Tech Stack
 
@@ -74,7 +76,9 @@ To run this project, you will need to add the following environment variables to
 #### Backend 
 
 - NodeJS with Express Framework
-- **Database**: I've used MongoDB with Mongoose
+- **IP Geolocation API** was used to determine the location of the client based on IPv4 or IPv6 address
+- Used **OpenWeather API** for displaying weather information related to client Geolocation
+- **Database**: MongoDB with Mongoose
 
 
 ## Contributions
