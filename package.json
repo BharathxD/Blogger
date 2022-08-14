@@ -25,6 +25,7 @@
     "mongoose": "^6.4.6",
     "mongoose-encryption": "^2.1.2",
     "mongoose-findorcreate": "^3.0.0",
+    "node-fetch": "^3.2.10",
     "opencage-api-client": "^1.0.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
