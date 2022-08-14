@@ -20,24 +20,27 @@ let lat,
 
 weatherStatus = true;
 
-/* ----------------------------- */
+/* ------------------ */
+/* IP Geolocation API */
 
-router.get("/", (req, res) => {
-
-  /* IP Geolocation API */
-
-  axios
+axios
     .get(
       //! Requires Ipgeolocation API 
       `https://ipgeolocation.abstractapi.com/v1/?api_key=${process.env.IPG_API_KEY}`
     )
-    .then((response) => {
-      lat = response.data.latitude;
-      lon = response.data.longitude;
+    .then( async (response) => {
+      const responseData = await response.data;
+      lat = responseData.latitude;
+      lon = responseData.longitude;
+      console.log(lat);
     })
     .catch((error) => {
       console.log(error);
     });
+
+/* Home Route */
+
+router.get("/", (req, res) => {
 
   /* Weather API */
 
@@ -51,6 +54,7 @@ router.get("/", (req, res) => {
     } else {
       response.on("data", (data) => {
         weatherData = JSON.parse(data);
+        console.log(weatherData);
         cityName = weatherData.name;
         weatherTemp = weatherData.main.temp;
         weatherMain = weatherData.weather[1].main;

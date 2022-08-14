@@ -27,7 +27,8 @@ const User = require("./models/user_model");
 
 /* ------------------- */
 
-app.set("view engine", "ejs");
+app.set("view engine", "ejs")
+app.set('trust proxy', 1);
 app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
