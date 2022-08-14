@@ -666,6 +666,9 @@ html.is-animating .transition-fade {
   .compose_container {
     margin: 20px auto;
   }
+  .conditions p {
+    display: none !important;
+  }
 }
 
 @media screen and (max-width: 768px) {

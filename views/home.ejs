@@ -11,7 +11,7 @@
     <a href="/about" class="btn btn-light btn-lg px-4 aboutBtn">About</a>
   </div>
 </div>
-<% if (!weatherStatus) {%>
+<% if (weatherStatus) {%>
 <div class="weatherContainer">
   <h1><%=cityName%></h1>
   <p><%=weatherTemp%>&deg;C</p>

@@ -43,6 +43,7 @@ router.get("/", async (req, res) => {
     });
     res.on('end', async () => {
       weatherData = await JSON.parse(data);
+      weatherStatus = weatherData.cod == 200 ? true : false;      
       cityName = weatherData.name;
       weatherTemp = weatherData.main.temp;
       weatherMain = weatherData.weather[0].main;
