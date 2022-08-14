@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+
 const Post = require('../models/post_model');
 const User = require('../models/user_model');
+
 const date = require('../public/js/date');
 
 router.route('/compose') 

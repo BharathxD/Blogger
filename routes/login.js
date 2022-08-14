@@ -4,7 +4,7 @@ const passport = require('passport');
 const User = require('../models/user_model');  
 
 router.route('/login') 
-.get((req, res) => { // GET
+.get((req, res) => { //* GET *//
   req.isAuthenticated() ? res.redirect('/') :  res.render('login');
     req.session.message = {
       type: 'danger',
@@ -12,7 +12,7 @@ router.route('/login')
       message: 'Restart',
     };
 })
-.post((req, res) => { // POST
+.post((req, res) => { //* POST *//
   const user = new User({
     username: req.body.username,
     password: req.body.password,
@@ -32,6 +32,8 @@ router.route('/login')
     }
   });
 });
+
+//* Logout Route *//
 
 router.get('/logout', (req, res) => {
     req.logout((err) => {

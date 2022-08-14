@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
+
 const passport = require('passport');
+
 const User = require('../models/user_model');
 
 router.route('/register') 
-.get((req, res) => { // GET
+.get((req, res) => { //* GET *//
   if (req.isAuthenticated()) {
     res.redirect('/');
   } else {
     res.render('register');
   }
 }).
-post( (req, res) => { // POST
+post( (req, res) => { //* POST *//
    User.register(
     { username: req.body.username },
     req.body.password,

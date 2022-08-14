@@ -1,5 +1,6 @@
 <%- include("partials/header"); -%>
 <main id="swup" class="transition-fade">
+  <div class="info">
 <div class="hero_container">
   <h1>Interested in writing Blogs?</h1>
   <p class="fs-5 col-md-8">Hey there, I'm Bharath, the creator of this new blogging platform called Blogger. 
@@ -9,6 +10,26 @@
     <a href="/compose" class="btn btn-danger btn-lg px-4">Compose Now</a>
     <a href="/about" class="btn btn-light btn-lg px-4 aboutBtn">About</a>
   </div>
+</div>
+<% if (weatherStatus) {%>
+<div class="weatherContainer">
+  <h1><%=cityName%></h1>
+  <p><%=weatherTemp%>&deg;C</p>
+  <div class="conditions">
+  <img src="<%=weatherIcon%>" alt="weatherIcon">
+  <p><%=weatherMain%></p>
+</div>
+<% } else { %>
+  <div class="weatherContainer">
+    <h7>Cannot get the weather Data :(</h7>
+  </div>
+<% } %>
+</div>
+<!-- <div class="quoteContainer">
+<h1>A Quote to get inspired!</h1>
+<p id="quote"></p>
+<p id="author"></p>
+</div> -->
 </div>
 <section>
 <% posts.reverse().forEach(function(post){ %>
