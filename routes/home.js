@@ -9,7 +9,7 @@ var Lat,
   weatherMain,
   weatherIcon,
   weatherDescription,
-  weatherStatus = true;
+  weatherStatus;
   
 
 const axios = require("axios").default;
@@ -33,10 +33,10 @@ const url = `https://api.openweathermap.org/data/2.5/weather?&lat=${Lat}&lon=${L
  https.get(url, (response) => {
     response.on("data", async (data) => {
       weatherData = await JSON.parse(data);
-      cityName = await weatherData.name;
-      weatherTemp = await weatherData.main.temp;
-      weatherMain = await weatherData.weather[1].main;
-      weatherDescription = await weatherData.weather[0].description;
+       cityName =  weatherData.name;
+      weatherTemp =  weatherData.main.temp;
+      weatherMain =  weatherData.weather[1].main;
+      weatherDescription =  weatherData.weather[0].description;
       weatherIcon = `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
     });
 });
