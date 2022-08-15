@@ -3,7 +3,7 @@
 const swup = new Swup({});
 
 function logout() {
-  setTimeout( (err) => { !err ? window.location.reload() : console.log(err); }, 200);
+  setTimeout( err => { !err ? window.location.reload() : console.log(err); }, 200);
 }
 
 /* Credits to Blobity :D for an amzing cursor */
