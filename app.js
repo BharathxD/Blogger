@@ -6,6 +6,7 @@ const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const flash = require("connect-flash");
+const compression = require('compression');
 const port = process.env.PORT || 3000;
 const app = express();
 require("dotenv").config();
@@ -40,6 +41,7 @@ app.use(
     maxAge: 1000 * 60 * 60 * 2, // 2 hours
   })
 );
+app.use(compression());
 
 /* PassportJS Middleware */
 
@@ -51,7 +53,7 @@ passport.use(
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL:
-        "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
+        "http://localhost:3000/auth/google/compose",
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
@@ -99,10 +101,11 @@ app.use((err, req, res, next) => {
 /* Nav elements intialization */
 
 app.use((req, res, next) => {
+  // Checks if the client is authenticated
   (req.isAuthenticated())
-    ? (res.locals.username = req.user.username)
+    ? (res.locals.username = req.user.username) 
     : (res.locals.username = "");
-  res.locals.signinStatus = req.isAuthenticated();
+  res.locals.signinStatus = req.isAuthenticated(); 
   next();
 });
 

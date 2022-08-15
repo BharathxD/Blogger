@@ -591,6 +591,19 @@ html.is-animating .transition-fade {
   width: 75px;
 }
 
+.newsletter {
+  accent-color: #eb1d35d8;
+  margin: 0 !important;
+  height: 15px;
+  width: 15px;
+}
+
+label {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
 @media screen and (max-width: 992px) {
   .nav_signinBtn {
     margin: 10px auto;
