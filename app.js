@@ -53,7 +53,7 @@ passport.use(
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL:
-        "http://localhost:3000/auth/google/compose",
+        "https://blogger-by-bharath.herokuapp.com/auth/google/compose",
     },
     (accessToken, refreshToken, profile, cb) => {
       User.findOrCreate(
