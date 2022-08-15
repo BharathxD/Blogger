@@ -35,7 +35,8 @@ These are the things I've considered while developing this website
 - NodeJS with Express Framework
 - **IP Geolocation API** was used to determine the location of the client based on IPv4 or IPv6 address
 - Used **OpenWeather API** for displaying weather information related to the client Geolocation
-- PassportJS and GoogleOauth 2.0 have been used to enable users to Log-In/Sign-Up securely 
+- **Mailchimp API** for newsletter feature along with sign up
+- **PassportJS** and **GoogleOauth 2.0** have been used to enable users to Log-In/Sign-Up securely 
 - **Database**: MongoDB with Mongoose
 
 
@@ -80,7 +81,8 @@ To run this project, you will need to add the following environment variables to
 `CLIENT_SECRET`  
 `DB_PASS`    
 `Weather_API_KEY`   
-`IPG_API_KEY`  
+`IPG_API_KEY` 
+`MAILCHIMP_API` 
 
 ## Contributions
 
