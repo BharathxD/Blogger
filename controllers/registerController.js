@@ -20,7 +20,7 @@ async function newsletter(req) {
   };
   const request = await https.request(url, options, (response) => {
     response.on("data", (data) => {
-      console.log(success);
+      console.log('success');
     });
   });
   request.write(jsonData);
