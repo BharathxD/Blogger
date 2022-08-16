@@ -393,7 +393,7 @@ html.is-animating .transition-fade {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 5px !important;
 }
 
 .nav_signinBtn span {
@@ -604,6 +604,10 @@ label {
   margin-left: 10px;
 }
 
+.dropdown_item {
+  width: 98% !important;
+}
+
 @media screen and (max-width: 992px) {
   .nav_signinBtn {
     margin: 10px auto;
@@ -616,9 +620,16 @@ label {
   }
   .nav_userBtn {
     min-width: 100%;
+    margin-right: 0;
   }
   .compose_container {
     margin: 20px auto;
+  }
+  .nav_signinBtn {
+    margin: 10px auto;
+  }
+  .dropdown_item {
+    width: 100% !important;
   }
 }
 
@@ -708,6 +719,14 @@ label {
   }
   .nav_signinBtn {
     margin: 10px auto;
+  }
+
+  .nav_userBtn {
+    margin-right: 0;
+  }
+
+  .dropdown_item {
+    width: 100% !important;
   }
 
   .contact_container {

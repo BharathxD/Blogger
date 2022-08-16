@@ -36,7 +36,6 @@ const homeController = async (req, res) => {
       .catch((error) => {
         console.log(error);
       });
-  
     //* openWeather API 
     //! Requires API Key
     

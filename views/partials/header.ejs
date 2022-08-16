@@ -36,9 +36,10 @@
           <li class="nav-item" id="contact">
             <a class="nav-link nav_item" href="/contact" data-blobity-tooltip="Contact Me!">Reach Me Out</a>
           </li>
-          <li class="nav-item" id="contact">
-            <a class="nav-link nav_item" href="/report" data-blobity-tooltip="Report :(">Report</a>
+          <li class="nav-item" id="compose">
+            <a class="nav-link nav_item" href="/compose" data-blobity-tooltip="Compose">Compose</a>
           </li>
+          
         </ul>
 
         <% if (signinStatus===false) { %>
@@ -53,12 +54,17 @@
           </a>
 
           <% } else {%>
-
-            <a type="button" href="/myposts" class="btn btn-light ms-auto nav_userBtn" data-blobity-magnetic="false"
-              data-blobity-tooltip="Your Posts!">
-              Welcome <%= username %>!
-                <ion-icon name="arrow-down-circle-outline" class="nav_icon"></ion-icon>
-            </a>
+            <li class="nav-item  dropdown ms-auto nav_userBtn">
+              <a type="button" class="btn btn-light ms-auto nav_userBtn dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-blobity-magnetic="false">
+                Welcome <%= username %>!
+              </a>
+              <ul class="dropdown-menu dropdown_item">
+                <li><a class="dropdown-item" href="/myposts" data-blobity-tooltip="Your Posts!">My Posts</a></li>
+                <li>
+                  <a class="dropdown-item" href="/report" data-blobity-tooltip="Report :(" id="contact">Report</a>
+                </li>
+              </ul>
+            </li>
             <a type="button" href="/logout" class="btn btn-light nav_signinBtn" onclick="logout()"
               data-blobity-magnetic="false">
               <span> Logout </span>
