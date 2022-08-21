@@ -552,6 +552,9 @@ html.is-animating .transition-fade {
 
 .conditions {
   margin-left: -10px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }
 
 .conditions p{
