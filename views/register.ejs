@@ -1,12 +1,12 @@
 <%-include('partials/header') %>
-<main id="swup" class="transition-fade">
+<main id="swup" class="transition-fade registerPage">
 <div class="form-signin">
   <div class="container">
     <form action="/register" method="post">
       <h1>Register</h1> 
       <input
-          type="email"
-          class="form-control"
+          type="text"
+          class="form-control username"
           placeholder="Username"
           name="username"
           autocomplete="off"
@@ -19,8 +19,10 @@
           name="password"
           required
         />
+        <div class="newLetterContainer">
         <input class="newsletter" type="checkbox" name="newsletter" id="newsletter" value="checked">
-        <label>I agree to Receive Newsletters via Email</label>
+        <p class="newsLetterLabel">I agree to Receive Newsletters via Email</p>
+        </div>
       <button class="w-100 btn btn-lg btn-dark" type="submit">Sign in</button>
       <div class="err_msg">
       <%if(error && error.length > 0){%>
