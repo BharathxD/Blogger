@@ -81,7 +81,7 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-/* flash middleware */
+/* Flash middleware */
 
 app.use((req, res, next) => {
   res.locals.error = req.flash("error");
