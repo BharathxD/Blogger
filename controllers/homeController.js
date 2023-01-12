@@ -43,7 +43,7 @@ const homeController = async (req, res) => {
     https
       .get(url, (res) => {
         let data = "";
-        res.on("data", (chunk) => {
+        res.on(data, (chunk) => {
           data += chunk;
         });
         res.on("end", async () => {
